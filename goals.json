@@ -1,0 +1,64 @@
+{
+  "goals": [
+    {
+      "id": "example_goal_1",
+      "title": "Learn Machine Learning",
+      "description": "Master machine learning concepts and practical applications",
+      "priority": "high",
+      "deadline": "2024-12-31",
+      "status": "active",
+      "milestones": [
+        {
+          "id": "ml_milestone_1",
+          "title": "Complete ML Fundamentals",
+          "description": "Learn basic ML concepts and algorithms",
+          "deadline": "2024-06-30",
+          "status": "pending",
+          "tasks": [
+            {
+              "id": "ml_task_1",
+              "title": "Study Linear Regression",
+              "description": "Understand linear regression theory and implementation",
+              "estimated_hours": 8,
+              "priority": "high",
+              "status": "pending",
+              "tags": ["study", "math", "algorithms"]
+            },
+            {
+              "id": "ml_task_2",
+              "title": "Implement Decision Trees",
+              "description": "Code decision tree algorithm from scratch",
+              "estimated_hours": 12,
+              "priority": "medium",
+              "status": "pending",
+              "tags": ["coding", "algorithms"]
+            }
+          ]
+        },
+        {
+          "id": "ml_milestone_2",
+          "title": "Build ML Projects",
+          "description": "Apply ML knowledge in practical projects",
+          "deadline": "2024-10-31",
+          "status": "pending",
+          "tasks": [
+            {
+              "id": "ml_task_3",
+              "title": "Create Image Classifier",
+              "description": "Build a CNN for image classification",
+              "estimated_hours": 20,
+              "priority": "high",
+              "status": "pending",
+              "tags": ["project", "deep-learning", "computer-vision"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2024-01-01T00:00:00Z",
+    "created_by": "digby"
+  }
+}
