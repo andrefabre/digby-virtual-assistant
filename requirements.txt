@@ -1,0 +1,23 @@
+# Core AI and planning dependencies
+langchain==0.1.0
+langchain-google-genai==0.0.6
+google-generativeai==0.3.2
+
+# Data handling and utilities
+pydantic==2.5.0
+python-dateutil==2.8.2
+pytz==2023.3
+
+# CLI and user interface
+click==8.1.7
+rich==13.7.0
+
+# Development and testing
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+
+# Logging and configuration
+python-dotenv==1.0.0
