@@ -1,0 +1,135 @@
+# Digby
+
+Digby is a life-management assistant for a single user (Andre). It holds a planning cascade — long-range Pathway down to weekly commitments — and runs a daily accountability loop against it across five goal Categories.
+
+## The Pathway
+
+**Pathway**:
+The long-range arc above the yearly layer — the multi-year Destination every Category's yearly outcomes derive from. There is exactly one Pathway.
+_Avoid_: Vision, 5-year plan, long-term plan
+
+**Destination**:
+What completing the Pathway looks like. Dual and inseparable: the credential (a qualified lawyer who also holds a Cybersecurity and Networking technology degree) and the business (Exegesis operating successfully in Legal Tech). Both, not either.
+
+**Legal Tech**:
+The convergence point of every Category — the market and expertise domain where the credential, the business and the employable skillset all compound. Adopted mid-2026 when previously separate goals were recognised as pointing the same way.
+_Avoid_: Lawtech, legal technology, legal AI (that is one Pillar, not the domain)
+
+**Vehicle**:
+A capability pursued because it enables the Destination, never as an end in itself. AI agents and agent orchestration are the primary Vehicle — the means of building Exegesis, delivering its services, and holding scarce expertise once the law degree completes.
+_Avoid_: Goal, end, objective
+
+**Enabler**:
+A Category whose purpose is to make the other Categories achievable rather than to reach a Destination of its own. Health & Fitness is an Enabler: excellent physical and mental health and sustainable work-life balance are preconditions, not side quests.
+
+**Cascade**:
+The derivation chain from Pathway down to daily commitments. Every level is traceable to the level above it.
+
+## Planning structure
+
+**Category**:
+One of the five top-level areas every goal belongs to: Education, Career, Business, Health & Fitness, Financial. The taxonomy the whole Cascade hangs off.
+_Avoid_: Domain, life area, area, pillar
+
+**Phase**:
+A date-bounded operating period with its own rules for allocating time, driven by real-world constraints rather than the calendar. Q3-Q4 2026 has four: pre-semester sprint, semester in session, exam period, post-semester break.
+_Avoid_: Stage, period
+
+**Sprint**:
+A two-week block of committed work inside a Phase.
+_Avoid_: Iteration, cycle
+
+**Weekly Execution Plan**:
+The markdown artifact holding one week's commitments, hour allocations and outcomes. The Cascade's lowest planning layer, and the document the daily loop reads and writes.
+_Avoid_: Weekly plan, WEP, schedule
+
+## Accountability
+
+**Floor**:
+A minimum weekly hour commitment for a Category, protected first when demand exceeds capacity. What overload trade-offs are measured against.
+_Avoid_: Minimum, baseline, quota
+
+**Check-in**:
+The single daily exchange in which committed work is marked done or missed. One per day regardless of how many commitments it covers.
+_Avoid_: Standup, review, daily review
+
+**Reason Code**:
+The required categorical explanation attached to a missed commitment. A miss cannot be finalised without one.
+_Avoid_: Excuse, note, reason
+
+**Escalation**:
+The state entered when misses reach the defined threshold within one Category inside a rolling window, triggering a Recovery Session.
+
+**Recovery Session**:
+A short structured session triggered by Escalation, whose outcome feeds into subsequent planning.
+
+**Rollover**:
+The carrying of incomplete commitments into the following week, with reprioritisation.
+_Avoid_: Carryover, rollup
+
+## Business
+
+**Exegesis**:
+The business. Operates four Pillars under one platform in the Legal Tech domain.
+_Avoid_: Exegete — that is the domain name, not the business
+
+**exegete.com.au**:
+The trading domain Exegesis publishes under. Correct for the website and its pages; wrong as the name of the business.
+
+**Pillar**:
+One of Exegesis's four business lines, each validated and then killed or scaled independently.
+_Avoid_: Venture, business unit, product
+
+**DRMO** (Digital Risk Management Officer):
+Pillar 1. Digital risk and settlement-fraud services, originally targeting estate lawyers and conveyancing.
+
+**Legal AI**:
+Pillar 2. AI-assisted legal automation services.
+
+**DLV** (Digital Legacy Vault):
+Pillar 3. Digital estate and legacy custody product. Carries AUSTRAC and Privacy Act compliance obligations.
+
+**Cyber Services**:
+Pillar 4. Cybersecurity services for home users and small-to-medium business.
+_Avoid_: Cyber Home+SMB
+
+**Door**:
+A published landing page designed to generate inbound signal passively, with no outbound prospecting. Pillars are validated by measuring Door signal.
+_Avoid_: Landing page, funnel, lead page
+
+**Review Gate**:
+A scheduled date at which accumulated Door signal is judged and a kill, adjust or scale decision is recorded per Pillar.
+_Avoid_: Checkpoint, milestone, decision point
+
+## Education & career
+
+**Bachelor of IT**:
+The Bachelor of Information Technology at Murdoch University, taken as a double major in Cybersecurity & Forensics and Networking & Internetworking. Completes end of 2028.
+_Avoid_: BIT, IT degree, Bachelor of Technology
+
+**Law degree**:
+The fast-tracked, full-time, online law degree running 2029–2030. Fast-tracked means two years rather than three, available because a degree in another field is already held, and structured as three semesters per year rather than two. Institution deliberately undecided.
+
+**Full-time study**:
+Four units per semester, two semesters per year, ten hours per unit per week — forty study hours in a semester week. The basis of the Education Floor.
+
+**Proof**:
+The demonstrable evidence that licenses Exegesis to sell a service: the degrees, certifications and delivered projects. Services cannot be sold before the Proof exists, which makes Education upstream of Business rather than competing with it.
+_Avoid_: Credentials, qualifications, evidence
+
+**JSO** (Judicial Support Officer):
+The target entry-level role at the Department of Justice, working in the courts. Preferred over the current role on three counts: real legal work experience, steady hours rather than weekly-varying start times, and better compatibility with four units a semester.
+
+**G4S**:
+Current employer. Court Security & Custody Officer, 38 hours per week, the financial floor funding everything else. Start times vary week to week, which is what makes it a poorer fit for study than JSO.
+
+**Casual work**:
+The fallback employment mode considered if no JSO role is secured within roughly six months, adopted to protect study commitments — including future units that require on-campus attendance rather than the fully online mode used so far.
+
+## External references
+
+**AUSTRAC** (Australian Transaction Reports and Analysis Centre):
+The Australian anti-money-laundering and counter-terrorism-financing regulator whose reporting obligations bind DLV.
+
+**PEXA**:
+The Australian electronic conveyancing platform through which property settlements execute. The fraud surface DRMO addresses.
