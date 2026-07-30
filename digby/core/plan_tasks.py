@@ -305,3 +305,90 @@ class TaskPlanner:
                 task[0].estimated_hours for task in pending_tasks
             ),
         }
+
+    def _resolve_cycle_time(self, cycle_time: Optional[Any] = None) -> datetime:
+        """Resolve cycle time from None, datetime, or ISO string."""
+        if cycle_time is None:
+            return datetime.now()
+
+        if isinstance(cycle_time, datetime):
+            return cycle_time
+
+        if isinstance(cycle_time, str):
+            try:
+                return datetime.fromisoformat(cycle_time)
+            except ValueError as exc:
+                raise ValueError(
+                    "cycle_time must be a valid ISO datetime string"
+                ) from exc
+
+        raise ValueError("cycle_time must be None, datetime, or ISO datetime string")
+
+    def run_execution_cycle(
+        self,
+        cycle_time: Optional[Any] = None,
+        hours_per_day: int = 6,
+        work_days: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Run one deterministic execution cycle and return a structured outcome.
+
+        The result shape is stable for downstream accountability and rollover work.
+        """
+        cycle_dt = self._resolve_cycle_time(cycle_time)
+        if work_days is None:
+            work_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+        week_start = cycle_dt - timedelta(days=cycle_dt.weekday())
+        weekly_schedule = self.generate_weekly_schedule(
+            start_date=week_start, hours_per_day=hours_per_day, work_days=work_days
+        )
+
+        due_now_decisions = [
+            {
+                "task_id": item.task_id,
+                "title": item.title,
+                "goal_title": item.goal_title,
+                "priority": item.priority,
+                "time_slot": item.time_slot,
+                "estimated_hours": item.estimated_hours,
+                "day": item.day,
+            }
+            for item in weekly_schedule
+            if item.day == cycle_dt.strftime("%A")
+        ]
+
+        summary = {
+            "active_goals": len(self.get_active_goals()),
+            "pending_tasks": len(self.get_pending_tasks()),
+            "scheduled_items_this_week": len(weekly_schedule),
+            "due_now_count": len(due_now_decisions),
+        }
+
+        accountability_events = [
+            {
+                "type": "cycle_executed",
+                "at": cycle_dt.isoformat(),
+                "details": {
+                    "active_goals": summary["active_goals"],
+                    "pending_tasks": summary["pending_tasks"],
+                },
+            },
+            {
+                "type": "due_now_identified",
+                "at": cycle_dt.isoformat(),
+                "details": {"due_now_count": summary["due_now_count"]},
+            },
+        ]
+
+        return {
+            "cycle_window": {
+                "anchor_time": cycle_dt.isoformat(),
+                "week_start": week_start.date().isoformat(),
+                "work_days": work_days,
+            },
+            "due_now_decisions": due_now_decisions,
+            "rollover_actions": [],
+            "accountability_events": accountability_events,
+            "summary": summary,
+        }

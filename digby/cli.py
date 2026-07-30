@@ -221,6 +221,28 @@ def progress():
 
 
 @cli.command()
+@click.option(
+    "--cycle-time",
+    default=None,
+    help="Optional ISO datetime anchor for deterministic cycle runs.",
+)
+def cycle(cycle_time: Optional[str]):
+    """Run one deterministic execution cycle and return structured output"""
+    config = get_config()
+    planner = TaskPlanner(config["goals_file"])
+
+    try:
+        outcome = planner.run_execution_cycle(
+            cycle_time=cycle_time,
+            hours_per_day=config["hours_per_day"],
+            work_days=config["work_days"],
+        )
+        console.print_json(json.dumps(outcome))
+    except ValueError as e:
+        console.print(f"[red]Error running cycle: {e}[/red]")
+
+
+@cli.command()
 @click.argument("task_id")
 @click.argument(
     "status", type=click.Choice(["pending", "in_progress", "completed", "cancelled"])

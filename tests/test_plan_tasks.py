@@ -181,6 +181,50 @@ class TestTaskPlanner:
         assert summary["active_goals"] == 1
         assert summary["total_estimated_hours"] == 6  # 4 + 2 hours
 
+    def test_run_execution_cycle_returns_structured_outcome(self, temp_goals_file):
+        """Test execution cycle returns stable structured output shape"""
+        planner = TaskPlanner(temp_goals_file)
+        outcome = planner.run_execution_cycle(
+            cycle_time="2024-01-08T09:00:00",
+            hours_per_day=6,
+            work_days=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        )
+
+        assert "cycle_window" in outcome
+        assert "due_now_decisions" in outcome
+        assert "rollover_actions" in outcome
+        assert "accountability_events" in outcome
+        assert "summary" in outcome
+
+        assert outcome["cycle_window"]["anchor_time"] == "2024-01-08T09:00:00"
+        assert outcome["cycle_window"]["week_start"] == "2024-01-08"
+        assert isinstance(outcome["due_now_decisions"], list)
+        assert isinstance(outcome["rollover_actions"], list)
+        assert isinstance(outcome["accountability_events"], list)
+        assert outcome["accountability_events"][0]["type"] == "cycle_executed"
+        assert outcome["accountability_events"][1]["type"] == "due_now_identified"
+
+    def test_run_execution_cycle_is_deterministic_for_same_inputs(self, temp_goals_file):
+        """Test cycle output is deterministic for same state and cycle time"""
+        planner = TaskPlanner(temp_goals_file)
+        kwargs = {
+            "cycle_time": "2024-01-08T09:00:00",
+            "hours_per_day": 6,
+            "work_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        }
+
+        first = planner.run_execution_cycle(**kwargs)
+        second = planner.run_execution_cycle(**kwargs)
+
+        assert first == second
+
+    def test_run_execution_cycle_rejects_invalid_cycle_time(self, temp_goals_file):
+        """Test cycle rejects invalid cycle-time format"""
+        planner = TaskPlanner(temp_goals_file)
+
+        with pytest.raises(ValueError):
+            planner.run_execution_cycle(cycle_time="not-a-datetime")
+
 
 class TestDataModels:
     """Test cases for data models"""
