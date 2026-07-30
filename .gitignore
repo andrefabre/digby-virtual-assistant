@@ -154,4 +154,5 @@ dmypy.json
 
 # Digby specific
 digby.log
-*.json.backupdemo_goals.json
+*.json.backup
+demo_goals.json
