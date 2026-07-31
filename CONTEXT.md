@@ -31,9 +31,14 @@ The derivation chain from Pathway down to daily commitments. Every level is trac
 One of the five top-level areas every goal belongs to: Education, Career, Business, Health & Fitness, Financial. The taxonomy the whole Cascade hangs off.
 _Avoid_: Domain, life area, area, pillar
 
-**Phase**:
-A date-bounded operating period with its own rules for allocating time, driven by real-world constraints rather than the calendar. Q3-Q4 2026 has four: pre-semester sprint, semester in session, exam period, post-semester break.
-_Avoid_: Stage, period
+**Phase** — ⚠️ **contested, do not use unqualified** (see [issue #35](https://github.com/andrefabre/digby-virtual-assistant/issues/35)):
+The word carries two unrelated meanings in this workspace and has no canonical sense until that ticket resolves.
+- *Delivery sense* — a package of work in a product build. Established and widespread: `01-drmo-business/`, `02-dlv-business/`, `11-legal-agentic-business/`, and every one of the 21 uses in the Q1 2026 weekly plans.
+- *Study-time sense* — a date-bounded operating period with its own time-allocation rules: pre-semester, semester in session, exam period, post-semester break. New as of July 2026 and confined to the three `13-strategic-plans/2026-Q3-Q4/` documents.
+
+**Break**:
+The interval between the end of one semester's exams and the start of the next. Roughly fourteen weeks at end of year and six mid-year — about twenty weeks annually. The only period in which certification study carries a Floor.
+_Avoid_: Holidays, semester break, downtime
 
 **Sprint**:
 A two-week block of committed work inside a Phase.

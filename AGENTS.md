@@ -1,5 +1,12 @@
 # Agent instructions
 
+See [CLAUDE.md](./CLAUDE.md) for the full operating brief — what to read first, working style, and the traps in this codebase. This file covers tooling conventions only.
+
+## Domain model
+
+- [CONTEXT.md](./CONTEXT.md) — the glossary. Challenge wording that conflicts with it.
+- [docs/adr/](./docs/adr/) — decisions, with reasoning and rejected alternatives. Check each status line.
+
 ## Agent skills
 
 ### Issue tracker
