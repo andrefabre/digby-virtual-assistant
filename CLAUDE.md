@@ -43,4 +43,4 @@ Use `/grill-with-docs` for design sessions — grilling plus domain-modeling, so
 
 - Author or edit his university assignment submissions. The study-tutor agent in the Obsidian workspace has a hard academic-integrity rule; it applies here too.
 - Push, or commit to `main`, without asking.
-- Write to the Obsidian workspace without saying which files. **It is not under version control** — there is no undo.
+- Write to the Obsidian workspace without saying which files. It *is* under version control now (git, local-only, auto-committing every 30 min via the obsidian-git plugin), so there is an undo — but say what you touched anyway.
