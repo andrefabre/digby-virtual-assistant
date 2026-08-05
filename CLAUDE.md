@@ -9,7 +9,7 @@ A life-management assistant for a single user (Andre). It holds a planning casca
 | File | Why |
 | --- | --- |
 | [CONTEXT.md](./CONTEXT.md) | The glossary. Every domain term, and what *not* to call it. Challenge any wording that conflicts with it. |
-| [docs/adr/](./docs/adr/) | Decisions already made, with the reasoning and the rejected alternatives. Check the status line — some are amended or superseded. |
+| [docs/adr/](./docs/adr/) | Decisions already made, with the reasoning and the rejected alternatives. **ADRs are immutable** — never edit one, supersede it. See [docs/adr/README.md](./docs/adr/README.md). Check the status line; superseded ones point at their replacement. |
 | [Wayfinder map #2](https://github.com/andrefabre/digby-virtual-assistant/issues/2) | Destination, decisions so far, open fog, and what is out of scope. |
 
 The user's own view of all this is `13-strategic-plans/DIGBY-MODEL-INDEX.md` in the Obsidian workspace at `C:\Users\andre\Documents\Obsidian_Domain_Workspace\Domain_Workspace`. **Keep it current** — it is the only view he sees without leaving Obsidian, and it is where he resumes from.
@@ -20,7 +20,8 @@ The user's own view of all this is `13-strategic-plans/DIGBY-MODEL-INDEX.md` in 
 - **Look facts up; ask only for decisions.** If it is in the filesystem, go and read it. The decisions are his.
 - **Say which step you are on and what is left.** He has been burned by sessions that produced a document of scattered answers to unordered questions. Announce the layer, the Category, and the remaining sequence.
 - **Refer to tickets by name, not number.** A wall of `#42, #43` is illegible.
-- **Give a recommendation with every question**, and the evidence behind it.
+- **Give a recommendation with every question**, and the evidence behind it — capped at **three bullets**. If a fourth feels necessary, the question is too big; split it.
+- **Short answers, plain words.** Aim for under 150 words per turn. No preamble, no restating what he just said, no summarising what you are about to say. Prefer everyday words over domain jargon, and never invent a term when a plain phrase works. Long-form detail belongs in the ticket or the ADR, not in chat — he reads those separately.
 - **Do not record thoughts as decisions.** When he says "these are thoughts for discussion", ticket it — do not write it into an ADR.
 
 Use `/grill-with-docs` for design sessions — grilling plus domain-modeling, so the glossary and ADRs stay current as decisions land.

@@ -9,18 +9,15 @@ The long-range arc above the yearly layer — the multi-year Destination every C
 _Avoid_: Vision, 5-year plan, long-term plan
 
 **Destination**:
-What completing the Pathway looks like. Dual and inseparable: the credential (a qualified lawyer who also holds a Cybersecurity and Networking technology degree) and the business (Exegesis operating successfully in Legal Tech). Both, not either.
+What completing the Pathway looks like, reached **end of 2033**. Three parts, all required: the **Unrestricted Practising Certificate** held, a **specialist practitioner role** in Legal Tech worked as an employee or contractor, and **Exegesis running as a revenue-generating product business**. Not an Incorporated Legal Practice — that stays available as a choice after 2033, but is not part of the Destination. See ADR 0003.
 
 **Legal Tech**:
 The convergence point of every Category — the market and expertise domain where the credential, the business and the employable skillset all compound. Adopted mid-2026 when previously separate goals were recognised as pointing the same way.
 _Avoid_: Lawtech, legal technology, legal AI (that is one Pillar, not the domain)
 
-**Vehicle**:
-A capability pursued because it enables the Destination, never as an end in itself. AI agents and agent orchestration are the primary Vehicle — the means of building Exegesis, delivering its services, and holding scarce expertise once the law degree completes.
-_Avoid_: Goal, end, objective
-
 **Enabler**:
-A Category whose purpose is to make the other Categories achievable rather than to reach a Destination of its own. Health & Fitness is an Enabler: excellent physical and mental health and sustainable work-life balance are preconditions, not side quests.
+A Category that other Categories depend on for capacity, and whose Floor is therefore defended rather than traded when demand exceeds capacity. Health & Fitness is an Enabler. This is "and also", never "instead of" — an Enabler carries its own yearly goals like any other Category, and for Health & Fitness those goals (an event to train for, a target set by a doctor) are what produce the daily exercise in the first place.
+_Avoid_: Support goal, side quest
 
 **Cascade**:
 The derivation chain from Pathway down to daily commitments. Every level is traceable to the level above it.
@@ -113,7 +110,19 @@ The Bachelor of Information Technology at Murdoch University, taken as a double 
 _Avoid_: BIT, IT degree, Bachelor of Technology
 
 **Law degree**:
-The fast-tracked, full-time, online law degree running 2029–2030. Fast-tracked means two years rather than three, available because a degree in another field is already held, and structured as three semesters per year rather than two. Institution deliberately undecided.
+The fast-tracked, full-time, online law degree running 2029–2030. Fast-tracked means two years rather than three, available because a degree in another field is already held, and structured as three semesters per year rather than two. Institution deliberately undecided. Runs alongside full-time work, and its three back-to-back semesters mean **there is no Break in 2029 or 2030**.
+
+**PLT** (Practical Legal Training):
+The Graduate Diploma of Legal Practice sat after the law degree, ~H1 2031. Fifteen weeks full-time online, plus a fifteen-day practical placement. Entry depends on a GPA threshold held through the law degree.
+
+**Admission**:
+The Supreme Court of WA ceremony at which the oath is taken and the Roll signed, ~mid 2031, following the Legal Practice Board's fit-and-proper check. Yields a **Restricted Practising Certificate** — practice only under supervision.
+
+**SLP** (Supervised Legal Practice):
+The 24 months of full-time-equivalent practice under an unrestricted supervisor, mid 2031 to mid 2033, required before an unrestricted certificate is issued. Compulsory — a qualification requirement, not an employment choice. Candidate settings: WA Department of Justice, AFP, ASD, corporate technology.
+
+**Unrestricted Practising Certificate**:
+Issued ~mid 2033 on the supervisor's declaration that SLP is complete. The point at which practice on one's own authority — including contracting — becomes possible. The credential half of the Destination.
 
 **Full-time study**:
 Four units per semester, two semesters per year, ten hours per unit per week — forty study hours in a semester week. The basis of the Education Floor.
