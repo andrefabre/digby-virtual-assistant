@@ -7,35 +7,17 @@
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<header>
-  <h1>Digby <span class="tag">prototype</span></h1>
-  <p class="disclaimer">UI sketch only — not the MVP delivery artifact. Sample data, not a real plan.</p>
-</header>
+<div id="app"></div>
 
-<section id="pathway" class="card"></section>
-
-<section>
-  <h2>Categories</h2>
-  <div id="categories" class="grid"></div>
-</section>
-
-<section>
-  <h2 id="week-label">Weekly Execution Plan</h2>
-  <table id="commitments">
-    <thead>
-      <tr><th>Category</th><th>Commitment</th><th>Hours</th><th>Status</th><th>Reason</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
-
-<section>
-  <h2>Daily check-in</h2>
-  <p class="hint">One check-in per day. Mark each commitment done or missed; missed items need a reason code.</p>
-  <div id="checkin-status"></div>
-  <button id="submit-checkin">Submit check-in</button>
-</section>
-
+<!-- Three variants of the Digby home screen — Momentum / Cascade / Conversation —
+     switchable via ?variant=A|B|C. Sub-shape B (new throwaway route): Digby has
+     no existing app to embed this into yet. All state is in-memory; reload resets it. -->
+<script src="/data.js"></script>
+<script src="/viz.js"></script>
+<script src="/switcher.js"></script>
+<script src="/variant-a.js"></script>
+<script src="/variant-b.js"></script>
+<script src="/variant-c.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>
