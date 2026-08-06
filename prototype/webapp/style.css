@@ -1,0 +1,106 @@
+:root {
+  color-scheme: light dark;
+  --border: #8884;
+  --accent: #4a7dff;
+  --bad: #d64545;
+  --good: #2c9c5a;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  line-height: 1.4;
+}
+
+header {
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  margin-bottom: 0.2rem;
+}
+
+.tag {
+  font-size: 0.55em;
+  font-weight: normal;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15em 0.7em;
+  vertical-align: middle;
+  opacity: 0.75;
+}
+
+.disclaimer, .hint {
+  opacity: 0.7;
+  font-size: 0.9em;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.category {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.category h3 {
+  margin: 0 0 0.35rem;
+}
+
+.floor.decided { color: var(--good); }
+.floor.open { color: var(--bad); }
+
+.source {
+  font-size: 0.8em;
+  opacity: 0.6;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+select {
+  padding: 0.25rem;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#checkin-status {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
