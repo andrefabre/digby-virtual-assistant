@@ -269,6 +269,62 @@ body { background: var(--page); color: var(--text-primary); }
 .vb-checkin-table select { padding: 0.25rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-1); }
 
 .vb-submit { margin-top: 1rem; background: var(--cat-1); color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.2rem; font-weight: 600; cursor: pointer; }
+
+/* Weekly Execution Plan calendar */
+.vb-cal {
+  display: grid;
+  grid-template-columns: 56px repeat(7, minmax(120px, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow-x: auto;
+  background: var(--surface-1);
+  margin-bottom: 1.5rem;
+}
+.vb-cal-gutter { border-right: 1px solid var(--gridline); }
+.vb-cal-corner { height: 46px; border-bottom: 1px solid var(--gridline); }
+.vb-cal-hour {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: right;
+  padding-right: 6px;
+  transform: translateY(-6px);
+}
+.vb-cal-col { border-right: 1px solid var(--gridline); }
+.vb-cal-col:last-child { border-right: none; }
+.vb-cal-col--today { background: color-mix(in srgb, var(--cat-1) 6%, transparent); }
+.vb-cal-daylabel {
+  height: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--gridline);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.vb-cal-col--today .vb-cal-daylabel { color: var(--cat-1); }
+.vb-cal-daylabel small { font-weight: 400; color: var(--text-muted); font-size: 0.68rem; }
+.vb-cal-total { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+.vb-cal-track { position: relative; }
+.vb-cal-line { position: absolute; left: 0; right: 0; height: 1px; background: var(--gridline); }
+.vb-block {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-left: 3px solid;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 0.7rem;
+  overflow: hidden;
+  line-height: 1.25;
+  cursor: default;
+}
+.vb-block-title { display: block; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vb-block-meta { display: block; color: var(--text-secondary); font-size: 0.65rem; }
+.vb-block--done { opacity: 0.55; }
+.vb-block--done .vb-block-title::after { content: " ✓"; }
+.vb-block--missed { opacity: 0.55; border-left-color: var(--status-critical) !important; }
+.vb-block--missed .vb-block-title::after { content: " ✕"; color: var(--status-critical); }
 .vb-history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 @media (max-width: 760px) {
   .vb-shell { grid-template-columns: 1fr; }

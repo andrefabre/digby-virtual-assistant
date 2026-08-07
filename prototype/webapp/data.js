@@ -76,20 +76,25 @@ const SEED = {
   weekly_plan: {
     week_label: "Sample week — demo data, not a real Weekly Execution Plan",
     commitments: [
-      { id: "c1", category: "education", title: "MAS183 tutorial", hours: 2, day: "Mon", status: "pending", reason_code: null },
-      { id: "c2", category: "education", title: "ICT169 lab", hours: 3, day: "Thu", status: "pending", reason_code: null },
-      { id: "c3", category: "education", title: "Independent study block", hours: 4, day: "Tue", status: "pending", reason_code: null },
-      { id: "c4", category: "health_fitness", title: "Training session", hours: 1, day: "Thu", status: "pending", reason_code: null },
-      { id: "c5", category: "career", title: "JSO application follow-up", hours: 1, day: "Wed", status: "pending", reason_code: null },
-      { id: "c6", category: "business", title: "Exegesis Door copy review", hours: 2, day: "Thu", status: "pending", reason_code: null },
-      { id: "c7", category: "financial", title: "Review Security+ exam fee savings", hours: 0.5, day: "Fri", status: "pending", reason_code: null },
-      { id: "c8", category: "education", title: "Revision — networking unit", hours: 3, day: "Sat", status: "pending", reason_code: null },
-      { id: "c9", category: "health_fitness", title: "Long run", hours: 1.5, day: "Sun", status: "pending", reason_code: null },
+      { id: "c1", category: "education", title: "MAS183 tutorial", hours: 2, day: "Mon", start: "10:00", status: "pending", reason_code: null },
+      { id: "c1b", category: "health_fitness", title: "Morning session", hours: 1, day: "Mon", start: "07:00", status: "pending", reason_code: null },
+      { id: "c2", category: "education", title: "ICT169 lab", hours: 3, day: "Thu", start: "13:00", status: "pending", reason_code: null },
+      { id: "c3", category: "education", title: "Independent study block", hours: 4, day: "Tue", start: "09:00", status: "pending", reason_code: null },
+      { id: "c3b", category: "business", title: "Exegesis Door metrics review", hours: 1, day: "Tue", start: "17:00", status: "pending", reason_code: null },
+      { id: "c4", category: "health_fitness", title: "Training session", hours: 1, day: "Thu", start: "07:00", status: "pending", reason_code: null },
+      { id: "c5", category: "career", title: "JSO application follow-up", hours: 1, day: "Wed", start: "11:00", status: "pending", reason_code: null },
+      { id: "c5b", category: "education", title: "Revision block", hours: 2, day: "Wed", start: "14:00", status: "pending", reason_code: null },
+      { id: "c6", category: "business", title: "Exegesis Door copy review", hours: 2, day: "Thu", start: "18:00", status: "pending", reason_code: null },
+      { id: "c7", category: "financial", title: "Review Security+ exam fee savings", hours: 0.5, day: "Fri", start: "12:00", status: "pending", reason_code: null },
+      { id: "c7b", category: "education", title: "Independent study block", hours: 3, day: "Fri", start: "09:00", status: "pending", reason_code: null },
+      { id: "c8", category: "education", title: "Revision — networking unit", hours: 3, day: "Sat", start: "10:00", status: "pending", reason_code: null },
+      { id: "c9", category: "health_fitness", title: "Long run", hours: 1.5, day: "Sun", start: "08:00", status: "pending", reason_code: null },
     ],
   },
 };
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 // Deterministic PRNG so the demo heatmap/streak look the same on every reload.
 function mulberry32(seed) {
@@ -107,6 +112,25 @@ function isoDaysAgo(n) {
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() - n);
   return d.toISOString().slice(0, 10);
+}
+
+// Monday..Sunday for the real current week, so the calendar shows actual dates.
+function currentWeekDates() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const mondayOffset = now.getDay() === 0 ? -6 : 1 - now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + mondayOffset);
+  return DAY_ORDER.map((name, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return {
+      name,
+      iso: d.toISOString().slice(0, 10),
+      label: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+      isToday: d.toISOString().slice(0, 10) === isoDaysAgo(0),
+    };
+  });
 }
 
 function buildDemoHistory() {
@@ -199,6 +223,7 @@ const store = (function () {
   function derived() {
     return {
       ...state,
+      weekDates: currentWeekDates(),
       streak: computeStreak(state.history, state.checkins),
       escalations: computeEscalations(state.reasonLog, state.checkins, state.categories, state.escalation_rule),
       reasonTally: reasonTally(state.reasonLog),

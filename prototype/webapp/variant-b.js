@@ -18,7 +18,7 @@ function renderVariantB(state, root) {
       </div>
       <nav class="vb-nav">
         <button class="vb-nav-item ${vbTab === "dashboard" ? "active" : ""}" data-tab="dashboard">Dashboard</button>
-        <button class="vb-nav-item ${vbTab === "plan" ? "active" : ""}" data-tab="plan">Weekly Plan &amp; Check-in</button>
+        <button class="vb-nav-item ${vbTab === "plan" ? "active" : ""}" data-tab="plan">Weekly Execution Plan</button>
         <button class="vb-nav-item ${vbTab === "history" ? "active" : ""}" data-tab="history">History</button>
       </nav>
     </aside>
@@ -71,25 +71,67 @@ function renderDashboard(state) {
   `;
 }
 
+// Calendar bounds — wide enough to hold every seeded block with margin.
+const CAL_START_HOUR = 6;
+const CAL_END_HOUR = 21;
+const CAL_PX_PER_HOUR = 52;
+
+function minutesFromMidnight(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function renderCalendar(state) {
+  const totalHeight = (CAL_END_HOUR - CAL_START_HOUR) * CAL_PX_PER_HOUR;
+  const hours = [];
+  for (let h = CAL_START_HOUR; h <= CAL_END_HOUR; h++) hours.push(h);
+
+  const dayTotals = Object.fromEntries(
+    state.weekDates.map((d) => [
+      d.name,
+      state.weekly_plan.commitments.filter((c) => c.day === d.name).reduce((sum, c) => sum + c.hours, 0),
+    ])
+  );
+
+  return `
+    <div class="vb-cal">
+      <div class="vb-cal-gutter">
+        <div class="vb-cal-corner"></div>
+        ${hours.map((h) => `<div class="vb-cal-hour" style="height:${CAL_PX_PER_HOUR}px">${String(h).padStart(2, "0")}:00</div>`).join("")}
+      </div>
+      ${state.weekDates.map((d) => `
+        <div class="vb-cal-col ${d.isToday ? "vb-cal-col--today" : ""}">
+          <div class="vb-cal-daylabel">
+            <span>${d.name}</span><small>${d.label}</small>
+            <span class="vb-cal-total">${dayTotals[d.name] || 0}h</span>
+          </div>
+          <div class="vb-cal-track" style="height:${totalHeight}px">
+            ${hours.map((h) => `<div class="vb-cal-line" style="top:${(h - CAL_START_HOUR) * CAL_PX_PER_HOUR}px"></div>`).join("")}
+            ${state.weekly_plan.commitments.filter((c) => c.day === d.name).map((c) => {
+              const cat = state.categories.find((cc) => cc.id === c.category);
+              const top = (minutesFromMidnight(c.start) - CAL_START_HOUR * 60) / 60 * CAL_PX_PER_HOUR;
+              const height = Math.max(20, (c.hours * 60) / 60 * CAL_PX_PER_HOUR - 2);
+              return `
+                <div class="vb-block vb-block--${c.status}" style="top:${top}px;height:${height}px;border-left-color:var(--cat-${cat.slot});background:var(--cat-${cat.slot}-soft)"
+                     title="${c.title} — ${cat.name}, ${c.hours}h, ${c.status}">
+                  <span class="vb-block-title">${c.title}</span>
+                  <span class="vb-block-meta">${c.start} · ${c.hours}h</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderPlan(state) {
   const todays = state.weekly_plan.commitments.filter((c) => c.day === state.todayName);
   return `
-    <h1>Weekly Plan</h1>
+    <h1>Weekly Execution Plan</h1>
     <p class="vb-sub">${state.weekly_plan.week_label}</p>
-    <table class="vb-table">
-      <thead><tr><th>Category</th><th>Commitment</th><th>Day</th><th>Hours</th><th>Status</th><th>Reason</th></tr></thead>
-      <tbody>
-        ${state.weekly_plan.commitments.map((c) => {
-          const cat = state.categories.find((cc) => cc.id === c.category);
-          return `<tr>
-            <td><span class="va-dot" style="background:var(--cat-${cat.slot})"></span> ${cat.name}</td>
-            <td>${c.title}</td><td>${c.day}</td><td>${c.hours}</td>
-            <td><span class="vb-status vb-status--${c.status}">${c.status}</span></td>
-            <td>${c.reason_code ? c.reason_code.replace(/_/g, " ") : "—"}</td>
-          </tr>`;
-        }).join("")}
-      </tbody>
-    </table>
+    ${renderCalendar(state)}
 
     <h2>Today's check-in — ${state.todayName}</h2>
     ${state.alreadyCheckedInToday ? `<p class="va-done-msg">Already checked in today.</p>` : `
