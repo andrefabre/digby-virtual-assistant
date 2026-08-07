@@ -1,10 +1,14 @@
-// Variant B — "Cascade". OKR-dashboard derived: persistent sidebar, KPI stat
-// tiles, an explicit Pathway -> Category -> Floor tree, and a dense table for
-// check-in (select-driven, not tap-driven) — a power-user / desktop reading
-// of the same data Variant A treats as a phone app.
+// Variant B — "Cascade", now the base. Persistent sidebar + KPI/Cascade
+// dashboard chrome stay, but:
+//  - Dashboard borrows Variant A's hero (daily ring + streak + category
+//    rings) instead of the old KPI-tile grid.
+//  - The Weekly Execution Plan is split into two separate menu items —
+//    Calendar (time grid) and Table (every commitment, full detail, at
+//    once) — instead of being bundled with check-in.
+//  - Check-in is its own menu item and borrows Variant C's conversational
+//    quick-reply flow wholesale (same buildMessages/wireQuickReplies).
 
 let vbTab = "dashboard";
-let vbStaged = {};
 
 function renderVariantB(state, root) {
   root.classList.add("vb-shell");
@@ -18,7 +22,12 @@ function renderVariantB(state, root) {
       </div>
       <nav class="vb-nav">
         <button class="vb-nav-item ${vbTab === "dashboard" ? "active" : ""}" data-tab="dashboard">Dashboard</button>
-        <button class="vb-nav-item ${vbTab === "plan" ? "active" : ""}" data-tab="plan">Weekly Execution Plan</button>
+        <div class="vb-nav-section">Weekly Execution Plan</div>
+        <button class="vb-nav-item ${vbTab === "calendar" ? "active" : ""}" data-tab="calendar">Calendar</button>
+        <button class="vb-nav-item ${vbTab === "table" ? "active" : ""}" data-tab="table">Table</button>
+        <div class="vb-nav-section">Daily</div>
+        <button class="vb-nav-item ${vbTab === "checkin" ? "active" : ""}" data-tab="checkin">Check-in</button>
+        <div class="vb-nav-section">Insights</div>
         <button class="vb-nav-item ${vbTab === "history" ? "active" : ""}" data-tab="history">History</button>
       </nav>
     </aside>
@@ -30,7 +39,13 @@ function renderVariantB(state, root) {
           — threshold is ${state.escalation_rule.misses}/${state.escalation_rule.window_days} days.
           <button id="vb-recovery">Start Recovery Session</button>
         </div>` : ""}
-      ${vbTab === "dashboard" ? renderDashboard(state) : vbTab === "plan" ? renderPlan(state) : renderHistory(state)}
+      ${
+        vbTab === "dashboard" ? renderDashboard(state)
+        : vbTab === "calendar" ? renderCalendarTab(state)
+        : vbTab === "table" ? renderTable(state)
+        : vbTab === "checkin" ? renderCheckinTab(state)
+        : renderHistory(state)
+      }
     </main>
   `;
 
@@ -40,34 +55,39 @@ function renderVariantB(state, root) {
   const recoveryBtn = document.getElementById("vb-recovery");
   if (recoveryBtn) recoveryBtn.onclick = () => alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)");
 
-  if (vbTab === "plan") wirePlan(state, root);
+  if (vbTab === "checkin") {
+    const msgs = document.getElementById("vb-chat-messages");
+    msgs.innerHTML = buildMessages(state).join("");
+    wireQuickReplies(state, msgs, () => renderVariantB(state, root));
+    msgs.scrollTop = msgs.scrollHeight;
+  }
 }
 
 function renderDashboard(state) {
-  const onTrack = state.categories.filter((c) => c.floor_status === "decided" && state.hoursThisWeek[c.id] >= c.floor_hours_per_week).length;
-  const decided = state.categories.filter((c) => c.floor_status === "decided").length;
-  return `
-    <h1>Dashboard</h1>
-    <div class="vb-kpis">
-      <div class="vb-kpi"><div class="vb-kpi-value">${state.streak}</div><div class="vb-kpi-label">day streak</div></div>
-      <div class="vb-kpi"><div class="vb-kpi-value">${onTrack}/${decided}</div><div class="vb-kpi-label">Floors on track</div></div>
-      <div class="vb-kpi"><div class="vb-kpi-value">${state.escalations.length}</div><div class="vb-kpi-label">active escalations</div></div>
-      <div class="vb-kpi"><div class="vb-kpi-value">${state.alreadyCheckedInToday ? "done" : "pending"}</div><div class="vb-kpi-label">today's check-in</div></div>
-    </div>
+  const todays = state.weekly_plan.commitments.filter((c) => c.day === state.todayName);
+  const doneCount = todays.filter((c) => c.status === "done").length;
+  const pct = todays.length ? doneCount / todays.length : 0;
 
-    <h2>Cascade</h2>
-    <div class="vb-cascade">
-      <div class="vb-cascade-node vb-cascade-root">${state.pathway.destination_label}</div>
-      <div class="vb-cascade-children">
-        ${state.categories.map((c) => `
-          <div class="vb-cascade-node" style="border-color: var(--cat-${c.slot})">
-            <span class="va-dot" style="background:var(--cat-${c.slot})"></span>
-            <b>${c.name}</b>
-            <span class="vb-floor-tag vb-floor-tag--${c.floor_status}">${c.floor_status === "decided" ? c.floor_hours_per_week + "h/wk floor" : "floor open"}</span>
-          </div>
-        `).join("")}
-      </div>
-    </div>
+  return `
+    <div class="vb-breadcrumb">${state.pathway.destination_label} <span class="vb-breadcrumb-sep">&rsaquo;</span> 5 Categories</div>
+
+    <section class="va-hero">
+      ${donutSVG({ size: 150, stroke: 14, pct, color: "var(--status-good)", label: `${doneCount}/${todays.length}` })}
+      <div class="va-streak">🔥 ${state.streak}-day streak</div>
+      <div class="va-week-label">${state.weekly_plan.week_label}</div>
+    </section>
+
+    <section class="va-cat-row vb-cat-row-wide">
+      ${state.categories.map((c) => {
+        const floorPct = c.floor_status === "decided" ? Math.min(1, state.hoursThisWeek[c.id] / c.floor_hours_per_week) : null;
+        return `
+        <div class="va-cat" title="${c.floor_note}">
+          ${donutSVG({ size: 64, stroke: 7, pct: floorPct ?? 0, color: `var(--cat-${c.slot})`, track: `var(--cat-${c.slot}-soft)` })}
+          <span>${c.name}</span>
+          <small>${c.floor_status === "decided" ? c.floor_hours_per_week + "h floor" : "floor open"}</small>
+        </div>`;
+      }).join("")}
+    </section>
   `;
 }
 
@@ -126,40 +146,46 @@ function renderCalendar(state) {
   `;
 }
 
-function renderPlan(state) {
-  const todays = state.weekly_plan.commitments.filter((c) => c.day === state.todayName);
+function renderCalendarTab(state) {
   return `
-    <h1>Weekly Execution Plan</h1>
+    <h1>Weekly Execution Plan — Calendar</h1>
     <p class="vb-sub">${state.weekly_plan.week_label}</p>
     ${renderCalendar(state)}
+  `;
+}
 
-    <h2>Today's check-in — ${state.todayName}</h2>
-    ${state.alreadyCheckedInToday ? `<p class="va-done-msg">Already checked in today.</p>` : `
-      <table class="vb-checkin-table">
-        <thead><tr><th>Commitment</th><th>Status</th><th>Reason</th></tr></thead>
-        <tbody>
-          ${todays.map((c) => `
-            <tr data-id="${c.id}">
-              <td>${c.title}</td>
-              <td>
-                <select class="vb-status-select" data-id="${c.id}">
-                  <option value="pending" ${!vbStaged[c.id] ? "selected" : ""}>pending</option>
-                  <option value="done" ${vbStaged[c.id]?.status === "done" ? "selected" : ""}>done</option>
-                  <option value="missed" ${vbStaged[c.id]?.status === "missed" ? "selected" : ""}>missed</option>
-                </select>
-              </td>
-              <td>
-                <select class="vb-reason-select" data-id="${c.id}" ${vbStaged[c.id]?.status !== "missed" ? "disabled" : ""}>
-                  <option value="">—</option>
-                  ${state.reason_codes.map((r) => `<option value="${r}" ${vbStaged[c.id]?.reason_code === r ? "selected" : ""}>${r.replace(/_/g, " ")}</option>`).join("")}
-                </select>
-              </td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-      ${todays.length ? `<button id="vb-submit" class="vb-submit">Submit check-in</button>` : `<p class="va-empty">Nothing scheduled today in the sample plan.</p>`}
-    `}
+function renderTable(state) {
+  const sorted = [...state.weekly_plan.commitments].sort((a, b) =>
+    DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day) || a.start.localeCompare(b.start)
+  );
+  return `
+    <h1>Weekly Execution Plan — Table</h1>
+    <p class="vb-sub">${state.weekly_plan.week_label} — every commitment, in detail</p>
+    <table class="vb-table">
+      <thead><tr><th>Day</th><th>Start</th><th>Category</th><th>Commitment</th><th>Hours</th><th>Status</th><th>Reason</th></tr></thead>
+      <tbody>
+        ${sorted.map((c) => {
+          const cat = state.categories.find((cc) => cc.id === c.category);
+          return `<tr>
+            <td>${c.day}</td>
+            <td>${c.start}</td>
+            <td><span class="va-dot" style="background:var(--cat-${cat.slot})"></span> ${cat.name}</td>
+            <td>${c.title}</td>
+            <td>${c.hours}</td>
+            <td><span class="vb-status vb-status--${c.status}">${c.status}</span></td>
+            <td>${c.reason_code ? c.reason_code.replace(/_/g, " ") : "—"}</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderCheckinTab(state) {
+  return `
+    <h1>Check-in — ${state.todayName}</h1>
+    <p class="vb-sub">Same conversational flow as Variant C, mounted inside the Cascade shell.</p>
+    <div class="vc-messages vb-chat" id="vb-chat-messages"></div>
   `;
 }
 
@@ -177,34 +203,4 @@ function renderHistory(state) {
       </div>
     </div>
   `;
-}
-
-function wirePlan(state, root) {
-  root.querySelectorAll(".vb-status-select").forEach((sel) => {
-    sel.onchange = () => {
-      const id = sel.dataset.id;
-      vbStaged[id] = { status: sel.value, reason_code: sel.value === "missed" ? vbStaged[id]?.reason_code || null : null };
-      renderVariantB(state, root);
-    };
-  });
-  root.querySelectorAll(".vb-reason-select").forEach((sel) => {
-    sel.onchange = () => {
-      vbStaged[sel.dataset.id] = { status: "missed", reason_code: sel.value || null };
-    };
-  });
-  const submit = document.getElementById("vb-submit");
-  if (submit) {
-    submit.onclick = () => {
-      const updates = Object.entries(vbStaged)
-        .filter(([, v]) => v.status !== "pending")
-        .map(([commitment_id, v]) => ({ commitment_id, ...v }));
-      if (updates.some((u) => u.status === "missed" && !u.reason_code)) {
-        alert("Give every missed item a reason first.");
-        return;
-      }
-      const res = actions.submitCheckin(updates);
-      if (res.error) { alert(res.error); return; }
-      vbStaged = {};
-    };
-  }
 }

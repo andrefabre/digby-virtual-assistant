@@ -42,7 +42,7 @@ function renderVariantC(state, root) {
 
   const msgs = document.getElementById("vc-messages");
   msgs.innerHTML = buildMessages(state).join("");
-  wireQuickReplies(state, root, msgs);
+  wireQuickReplies(state, msgs, () => renderVariantC(state, root));
   msgs.scrollTop = msgs.scrollHeight;
 }
 
@@ -110,19 +110,22 @@ function buildMessages(state) {
   return out;
 }
 
-function wireQuickReplies(state, root, msgs) {
+// `onChange` re-renders whichever shell mounted this — Variant C re-renders
+// itself; Variant B (which reuses this wholesale for its Check-in tab)
+// re-renders its own sidebar shell instead. Never assume which one.
+function wireQuickReplies(state, msgs, onChange) {
   msgs.querySelectorAll(".vc-qr").forEach((btn) => {
     btn.onclick = () => {
       const { action, value } = btn.dataset;
       if (action === "recovery") { alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)"); return; }
       if (action === "dismiss") { return; }
-      if (action === "done") { vcStaged[value] = { status: "done", reason_code: null }; renderVariantC(state, root); return; }
-      if (action === "missed") { vcAwaitingReasonFor = value; renderVariantC(state, root); return; }
+      if (action === "done") { vcStaged[value] = { status: "done", reason_code: null }; onChange(); return; }
+      if (action === "missed") { vcAwaitingReasonFor = value; onChange(); return; }
       if (action === "reason") {
         const [id, reason] = value.split("::");
         vcStaged[id] = { status: "missed", reason_code: reason };
         vcAwaitingReasonFor = null;
-        renderVariantC(state, root);
+        onChange();
         return;
       }
       if (action === "submit") {

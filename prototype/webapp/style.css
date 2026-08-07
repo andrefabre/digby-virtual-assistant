@@ -231,6 +231,14 @@ body { background: var(--page); color: var(--text-primary); }
 .vb-nav-item { text-align: left; background: none; border: none; padding: 0.55rem 0.7rem; border-radius: 8px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; }
 .vb-nav-item.active { background: var(--cat-1-soft); color: var(--cat-1); font-weight: 600; }
 .vb-nav-item:hover:not(.active) { background: var(--page); }
+.vb-nav-section {
+  margin: 0.5rem 0 -0.15rem 0.7rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
 
 .vb-main { padding: 1.5rem 2rem 3rem; max-width: 980px; }
 .vb-main h1 { margin: 0 0 1rem; font-size: 1.3rem; }
@@ -251,6 +259,19 @@ body { background: var(--page); color: var(--text-primary); }
 .vb-kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem; }
 .vb-kpi-value { font-size: 1.6rem; font-weight: 700; }
 .vb-kpi-label { font-size: 0.75rem; color: var(--text-muted); }
+
+.vb-breadcrumb { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; }
+.vb-breadcrumb-sep { margin: 0 0.35rem; }
+.vb-main .va-hero { padding-top: 0; }
+.vb-cat-row-wide.va-cat-row {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.vb-cat-row-wide .va-cat { width: 100px; }
+
+.vb-chat { max-height: 62vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: var(--page); }
 
 .vb-cascade-root { font-weight: 700; padding: 0.6rem 0.9rem; border: 1px solid var(--border); border-radius: 10px; display: inline-block; margin-bottom: 0.75rem; background: var(--surface-1); }
 .vb-cascade-children { display: flex; flex-wrap: wrap; gap: 0.6rem; }
