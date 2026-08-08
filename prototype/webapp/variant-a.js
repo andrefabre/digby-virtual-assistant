@@ -51,6 +51,17 @@ function renderVariantA(state, root) {
             </div>
           </section>
 
+          <section class="cc-panel cc-panel--teaser" id="cc-open-viewplan" data-modal="viewplan" tabindex="0" role="button">
+            <h2>View Plan</h2>
+            <div class="cc-card-stat"><span class="cc-card-number">${planStats.total}</span><span class="cc-card-sub">commitments this week</span></div>
+            <div class="cc-card-substats">
+              <span>${planStats.done} done</span>
+              <span>${planStats.missed} missed</span>
+              <span>${planStats.pending} pending</span>
+            </div>
+            <div class="cc-card-cta">View full plan →</div>
+          </section>
+
           <section class="cc-panel cc-panel--categories">
             <h2>Categories</h2>
             <ul class="cc-cat-list">
@@ -65,17 +76,6 @@ function renderVariantA(state, root) {
                 </li>`;
               }).join("")}
             </ul>
-          </section>
-
-          <section class="cc-panel cc-panel--teaser" id="cc-open-viewplan" data-modal="viewplan" tabindex="0" role="button">
-            <h2>View Plan</h2>
-            <div class="cc-card-stat"><span class="cc-card-number">${planStats.total}</span><span class="cc-card-sub">commitments this week</span></div>
-            <div class="cc-card-substats">
-              <span>${planStats.done} done</span>
-              <span>${planStats.missed} missed</span>
-              <span>${planStats.pending} pending</span>
-            </div>
-            <div class="cc-card-cta">View full plan →</div>
           </section>
 
           <section class="cc-panel cc-panel--teaser" id="cc-open-history" data-modal="history" tabindex="0" role="button">

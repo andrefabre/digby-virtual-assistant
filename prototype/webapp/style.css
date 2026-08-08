@@ -359,7 +359,11 @@ body { background: var(--page); color: var(--text-primary); }
 /* Top to bottom: KPIs/Categories/View Plan/History in a row, then
    Calendar, then Check-in. */
 .cc-grid { display: flex; flex-direction: column; gap: 1rem; }
-.cc-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; align-items: start; }
+/* Equal-height row — Categories is the one with variable-length content, so
+   it's the one that scrolls internally rather than stretching the row to
+   fit it (or leaving the other three cards short). */
+.cc-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; align-items: stretch; }
+.cc-row-4 .cc-panel { display: flex; flex-direction: column; }
 .cc-panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.25rem; }
 .cc-panel h2 { font-size: 0.95rem; margin: 0 0 0.75rem; }
 
@@ -382,7 +386,7 @@ body { background: var(--page); color: var(--text-primary); }
 .cc-kpi-mini b { font-size: 1.3rem; }
 .cc-kpi-mini span { font-size: 0.72rem; color: var(--text-muted); }
 
-.cc-cat-list { list-style: none; margin: 0; padding: 0; }
+.cc-cat-list { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; }
 .cc-cat-list li { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0; border-bottom: 1px solid var(--gridline); font-size: 0.83rem; flex-wrap: wrap; }
 .cc-cat-list li:last-child { border-bottom: none; }
 .cc-cat-name { font-weight: 600; }
