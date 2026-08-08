@@ -1,5 +1,5 @@
-// Orchestrator: three structurally different takes on the Digby home screen
-// (Momentum / Cascade / Conversation), switchable via ?variant=A|B|C.
+// Orchestrator: three creative evolutions of the validated Cascade shell
+// (Command Center / Cascade / Timeline), switchable via ?variant=A|B|C.
 // Sub-shape B (new throwaway route) — Digby has no existing app to embed into.
 // All state is in-memory (data.js) — reload resets everything.
 

@@ -208,6 +208,33 @@ function reasonTally(reasonLog) {
   return Object.entries(tally).sort((a, b) => b[1] - a[1]);
 }
 
+// Is each decided-Floor Category on pace to hit it by Sunday, at this
+// week's rate so far? Projected pace, not a real week-end guarantee.
+function computeFloorRisk(categories, hoursThisWeek, weekDates) {
+  const elapsedDays = weekDates.findIndex((d) => d.isToday) + 1 || 7;
+  return categories
+    .filter((c) => c.floor_status === "decided")
+    .map((c) => {
+      const pace = Math.round(((hoursThisWeek[c.id] || 0) / elapsedDays) * 7 * 10) / 10;
+      return { category: c, pace, atRisk: pace < c.floor_hours_per_week };
+    });
+}
+
+// Where "today" sits on the Pathway's remaining horizon. 2026 is this
+// planning cycle's start, not a tracked start date for the Pathway itself
+// — illustrative, not a decision.
+function pathwayProgress() {
+  const start = new Date(2026, 0, 1);
+  const end = new Date(2033, 11, 31);
+  const pct = Math.max(0, Math.min(1, (Date.now() - start) / (end - start)));
+  return { pct, startYear: 2026, endYear: 2033 };
+}
+
+// Last 14 days of check-in completions, oldest first — for a trend sparkline.
+function recentDoneTrend(history) {
+  return history.slice(-14).map((h) => h.done);
+}
+
 const store = (function () {
   const { history, reasonLog } = buildDemoHistory();
   const state = {
@@ -221,20 +248,25 @@ const store = (function () {
   const listeners = [];
 
   function derived() {
+    const weekDates = currentWeekDates();
+    const hoursThisWeek = Object.fromEntries(
+      state.categories.map((c) => [
+        c.id,
+        state.weekly_plan.commitments
+          .filter((cm) => cm.category === c.id && cm.status === "done")
+          .reduce((sum, cm) => sum + cm.hours, 0),
+      ])
+    );
     return {
       ...state,
-      weekDates: currentWeekDates(),
+      weekDates,
+      hoursThisWeek,
       streak: computeStreak(state.history, state.checkins),
       escalations: computeEscalations(state.reasonLog, state.checkins, state.categories, state.escalation_rule),
       reasonTally: reasonTally(state.reasonLog),
-      hoursThisWeek: Object.fromEntries(
-        state.categories.map((c) => [
-          c.id,
-          state.weekly_plan.commitments
-            .filter((cm) => cm.category === c.id && cm.status === "done")
-            .reduce((sum, cm) => sum + cm.hours, 0),
-        ])
-      ),
+      floorRisk: computeFloorRisk(state.categories, hoursThisWeek, weekDates),
+      pathwayProgress: pathwayProgress(),
+      recentDoneTrend: recentDoneTrend(state.history),
       alreadyCheckedInToday: state.checkins.some((c) => c.date === state.today),
     };
   }

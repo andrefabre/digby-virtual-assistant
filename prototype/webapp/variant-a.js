@@ -1,146 +1,173 @@
-// Variant A — "Momentum". Habit-tracker derived: single-column, phone-card
-// layout, one big daily-completion ring, a tactile tap-to-check-off list,
-// streak front and center, heatmap for history. Structure over table: the
-// day's loop is the whole screen, everything else is secondary.
+// Variant A — "Command Center". Cockpit, not tabs: everything that matters
+// lives on one dense screen (KPIs + trend, Floor risk, calendar, chat
+// check-in), and a Ctrl+K search jumps straight to any commitment instead
+// of navigating a sidebar. Table/History are one click away in a modal.
 
-let vaTab = "today";
-let vaPending = {}; // commitment_id -> {status, reason_code} staged before submit
+let ccPaletteOpen = false;
+let ccModal = null; // "table" | "history" | null
 
 function renderVariantA(state, root) {
-  root.classList.add("va-shell-wrap");
-
-  const todays = state.weekly_plan.commitments.filter((c) => c.day === state.todayName);
-  const staged = todays.filter((c) => vaPending[c.id]);
-  const doneCount = todays.filter((c) => c.status === "done" || vaPending[c.id]?.status === "done").length;
-  const pct = todays.length ? doneCount / todays.length : 0;
+  root.classList.add("cc-shell-wrap");
 
   root.innerHTML = `
-    <div class="va-shell">
-      <header class="va-header">
-        <div class="va-word">Digby</div>
-        <div class="va-tabs">
-          <button class="va-tab ${vaTab === "today" ? "active" : ""}" data-tab="today">Today</button>
-          <button class="va-tab ${vaTab === "history" ? "active" : ""}" data-tab="history">History</button>
-        </div>
+    <div class="cc-shell">
+      <header class="cc-topbar">
+        <span class="cc-word">Digby</span>
+        <button class="cc-search" id="cc-search-btn">🔍 Jump to a commitment… <kbd>Ctrl K</kbd></button>
+        <span class="cc-streak">🔥 ${state.streak}d</span>
+        <button class="cc-linkbtn" data-modal="table">Table</button>
+        <button class="cc-linkbtn" data-modal="history">History</button>
       </header>
 
       ${state.escalations.length ? `
-        <div class="va-escalation">
-          <b>${state.escalations.map((e) => e.category.name).join(", ")}</b> hit
-          ${state.escalation_rule.misses} misses in ${state.escalation_rule.window_days} days.
-          <button id="va-recovery">Start Recovery Session</button>
+        <div class="vb-banner">
+          <strong>Escalation:</strong>
+          ${state.escalations.map((e) => `${e.category.name} (${e.count} misses)`).join(", ")}
+          — threshold is ${state.escalation_rule.misses}/${state.escalation_rule.window_days} days.
+          <button id="cc-recovery">Start Recovery Session</button>
         </div>` : ""}
 
-      ${vaTab === "today" ? renderToday(state, todays, doneCount, pct) : renderHistory(state)}
+      <div class="cc-grid">
+        <section class="cc-panel cc-panel--kpis">
+          <div class="cc-kpi">
+            <div class="cc-kpi-top"><span class="cc-kpi-label">Check-ins, last 14 days</span></div>
+            <div class="cc-kpi-row">
+              <span class="cc-kpi-value">${state.streak}</span>
+              ${sparklineSVG(state.recentDoneTrend)}
+            </div>
+          </div>
+          <div class="cc-kpi-mini">
+            <div><b>${state.floorRisk.filter((r) => r.atRisk).length}</b><span>Floors behind pace</span></div>
+            <div><b>${state.escalations.length}</b><span>Escalations</span></div>
+            <div><b>${state.alreadyCheckedInToday ? "✓" : "—"}</b><span>Checked in today</span></div>
+          </div>
+        </section>
+
+        <section class="cc-panel cc-panel--categories">
+          <h2>Categories</h2>
+          <ul class="cc-cat-list">
+            ${state.categories.map((c) => {
+              const risk = state.floorRisk.find((r) => r.category.id === c.id);
+              return `
+              <li>
+                <span class="va-dot" style="background:var(--cat-${c.slot})"></span>
+                <span class="cc-cat-name">${c.name}</span>
+                <span class="cc-cat-floor">${c.floor_status === "decided" ? `${c.floor_hours_per_week}h/wk` : "floor open"}</span>
+                ${risk ? `<span class="vb-risk vb-risk--${risk.atRisk ? "behind" : "ontrack"}">${risk.atRisk ? `behind (pace ${risk.pace}h)` : "on pace"}</span>` : ""}
+              </li>`;
+            }).join("")}
+          </ul>
+        </section>
+
+        <section class="cc-panel cc-panel--calendar">
+          <h2>This week</h2>
+          ${renderCalendar(state)}
+        </section>
+
+        <section class="cc-panel cc-panel--chat">
+          <h2>Check-in — ${state.todayName}</h2>
+          <div class="vc-messages cc-chat" id="cc-chat-messages"></div>
+        </section>
+      </div>
     </div>
+
+    <div class="cc-palette-backdrop ${ccPaletteOpen ? "open" : ""}" id="cc-palette-backdrop">
+      <div class="cc-palette" id="cc-palette">
+        <input type="text" id="cc-palette-input" placeholder="Search commitments by title, category, or day…" autocomplete="off" />
+        <ul class="cc-palette-results" id="cc-palette-results"></ul>
+      </div>
+    </div>
+
+    ${ccModal ? renderModal(state, root) : ""}
   `;
 
-  root.querySelectorAll(".va-tab").forEach((btn) => {
-    btn.onclick = () => { vaTab = btn.dataset.tab; renderVariantA(state, root); };
+  wireTopbar(state, root);
+  wirePalette(state, root);
+  wireModal(state, root);
+
+  mountCheckinChat(state, document.getElementById("cc-chat-messages"), () => renderVariantA(state, root));
+}
+
+function renderModal(state, root) {
+  const title = ccModal === "table" ? "Weekly Execution Plan — Table" : "History";
+  const body = ccModal === "table"
+    ? renderTableSwitch(state, () => renderVariantA(state, root)).html
+    : `
+      <div class="vb-history-grid">
+        <div><h2>Last 5 weeks</h2><div class="va-heatmap-wrap">${heatmapSVG(state.history)}</div></div>
+        <div><h2>Miss reasons</h2><div class="va-hbar-wrap">${hbarSVG(state.reasonTally)}</div></div>
+      </div>
+    `;
+  return `
+    <div class="cc-modal-backdrop" id="cc-modal-backdrop">
+      <div class="cc-modal">
+        <header><h1>${title}</h1><button id="cc-modal-close">✕</button></header>
+        <div class="cc-modal-body">${body}</div>
+      </div>
+    </div>
+  `;
+}
+
+function wireTopbar(state, root) {
+  document.getElementById("cc-search-btn").onclick = () => { ccPaletteOpen = true; renderVariantA(state, root); };
+  root.querySelectorAll(".cc-linkbtn").forEach((btn) => {
+    btn.onclick = () => { ccModal = btn.dataset.modal; renderVariantA(state, root); };
   });
-
-  if (vaTab === "today") wireToday(state, root, todays);
-
-  const recoveryBtn = document.getElementById("va-recovery");
+  const recoveryBtn = document.getElementById("cc-recovery");
   if (recoveryBtn) recoveryBtn.onclick = () => alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)");
 }
 
-function renderToday(state, todays, doneCount, pct) {
-  return `
-    <section class="va-hero">
-      <div class="va-ring">
-        ${donutSVG({ size: 160, stroke: 14, pct, color: "var(--status-good)", label: `${doneCount}/${todays.length}` })}
-      </div>
-      <div class="va-streak">🔥 ${state.streak}-day streak</div>
-      <div class="va-week-label">${state.weekly_plan.week_label}</div>
-    </section>
+function wirePalette(state, root) {
+  const backdrop = document.getElementById("cc-palette-backdrop");
+  const input = document.getElementById("cc-palette-input");
+  const results = document.getElementById("cc-palette-results");
 
-    <section class="va-cat-row">
-      ${state.categories.map((c) => {
-        const floorPct = c.floor_status === "decided" ? Math.min(1, state.hoursThisWeek[c.id] / c.floor_hours_per_week) : null;
-        return `
-        <div class="va-cat" title="${c.floor_note}">
-          ${donutSVG({ size: 56, stroke: 6, pct: floorPct ?? 0, color: `var(--cat-${c.slot})`, track: `var(--cat-${c.slot}-soft)` })}
-          <span>${c.name}</span>
-          <small>${c.floor_status === "decided" ? c.floor_hours_per_week + "h floor" : "floor open"}</small>
-        </div>`;
-      }).join("")}
-    </section>
-
-    <section class="va-today-list">
-      <h2>Today — ${state.todayName}</h2>
-      ${state.alreadyCheckedInToday ? `<p class="va-done-msg">✅ Already checked in today.</p>` : ""}
-      ${todays.length === 0 ? `<p class="va-empty">Nothing scheduled today in the sample plan.</p>` : ""}
-      ${todays.map((c) => {
-        const staged = vaPending[c.id];
-        const effectiveStatus = state.alreadyCheckedInToday ? c.status : (staged?.status || "pending");
-        const cat = state.categories.find((cc) => cc.id === c.category);
-        return `
-        <div class="va-row va-row--${effectiveStatus}" data-id="${c.id}">
-          <button class="va-check" data-id="${c.id}" ${state.alreadyCheckedInToday ? "disabled" : ""}>
-            ${effectiveStatus === "done" ? "✓" : effectiveStatus === "missed" ? "✕" : ""}
-          </button>
-          <div class="va-row-body">
-            <div class="va-row-title">${c.title}</div>
-            <div class="va-row-meta"><span class="va-dot" style="background:var(--cat-${cat.slot})"></span>${cat.name} · ${c.hours}h</div>
-            ${effectiveStatus === "missed" ? `
-              <select class="va-reason" data-id="${c.id}" ${state.alreadyCheckedInToday ? "disabled" : ""}>
-                <option value="">reason…</option>
-                ${state.reason_codes.map((r) => `<option value="${r}" ${staged?.reason_code === r ? "selected" : ""}>${r.replace(/_/g, " ")}</option>`).join("")}
-              </select>` : ""}
-          </div>
-          ${!state.alreadyCheckedInToday ? `<button class="va-miss" data-id="${c.id}">missed</button>` : ""}
-        </div>`;
-      }).join("")}
-      ${todays.length && !state.alreadyCheckedInToday ? `<button id="va-submit" class="va-submit">Finish check-in</button>` : ""}
-    </section>
-  `;
-}
-
-function renderHistory(state) {
-  return `
-    <section class="va-history">
-      <h2>Last 5 weeks</h2>
-      <div class="va-heatmap-wrap">${heatmapSVG(state.history)}</div>
-      <h2>Why things get missed</h2>
-      <div class="va-hbar-wrap">${hbarSVG(state.reasonTally)}</div>
-    </section>
-  `;
-}
-
-function wireToday(state, root, todays) {
-  root.querySelectorAll(".va-check").forEach((btn) => {
-    btn.onclick = () => {
-      const id = btn.dataset.id;
-      const cur = vaPending[id]?.status;
-      vaPending[id] = cur === "done" ? undefined : { status: "done", reason_code: null };
-      if (!vaPending[id]) delete vaPending[id];
-      renderVariantA(state, root);
-    };
-  });
-  root.querySelectorAll(".va-miss").forEach((btn) => {
-    btn.onclick = () => {
-      const id = btn.dataset.id;
-      vaPending[id] = { status: "missed", reason_code: null };
-      renderVariantA(state, root);
-    };
-  });
-  root.querySelectorAll(".va-reason").forEach((sel) => {
-    sel.onchange = () => {
-      vaPending[sel.dataset.id] = { status: "missed", reason_code: sel.value || null };
-    };
-  });
-  const submit = document.getElementById("va-submit");
-  if (submit) {
-    submit.onclick = () => {
-      const updates = Object.entries(vaPending).map(([commitment_id, v]) => ({ commitment_id, ...v }));
-      if (updates.some((u) => u.status === "missed" && !u.reason_code)) {
-        alert("Give every missed item a reason first.");
-        return;
-      }
-      const res = actions.submitCheckin(updates);
-      if (res.error) { alert(res.error); return; }
-      vaPending = {};
-    };
+  function renderResults(query) {
+    const q = query.trim().toLowerCase();
+    const matches = !q ? [] : state.weekly_plan.commitments.filter((c) => {
+      const cat = state.categories.find((cc) => cc.id === c.category);
+      return `${c.title} ${cat.name} ${c.day}`.toLowerCase().includes(q);
+    });
+    results.innerHTML = matches.slice(0, 8).map((c) => {
+      const cat = state.categories.find((cc) => cc.id === c.category);
+      return `<li data-id="${c.id}"><span class="va-dot" style="background:var(--cat-${cat.slot})"></span> <b>${c.title}</b> — ${cat.name}, ${c.day} ${c.start}, ${c.hours}h</li>`;
+    }).join("") || (q ? `<li class="cc-palette-empty">No matches.</li>` : "");
+    results.querySelectorAll("li[data-id]").forEach((li) => {
+      li.onclick = () => {
+        const c = state.weekly_plan.commitments.find((cc) => cc.id === li.dataset.id);
+        ccPaletteOpen = false;
+        renderVariantA(state, root);
+        alert(`${c.title}\n${c.day} at ${c.start} · ${c.hours}h · ${c.status}`);
+      };
+    });
   }
+
+  input.oninput = () => renderResults(input.value);
+  if (ccPaletteOpen) { input.focus(); renderResults(""); }
+
+  backdrop.onclick = (e) => { if (e.target === backdrop) { ccPaletteOpen = false; renderVariantA(state, root); } };
 }
+
+function wireModal(state, root) {
+  const backdrop = document.getElementById("cc-modal-backdrop");
+  if (!backdrop) return;
+  document.getElementById("cc-modal-close").onclick = () => { ccModal = null; renderVariantA(state, root); };
+  backdrop.onclick = (e) => { if (e.target === backdrop) { ccModal = null; renderVariantA(state, root); } };
+  if (ccModal === "table") renderTableSwitch(state, () => renderVariantA(state, root)).wire(document.querySelector(".cc-modal-body"));
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!document.querySelector(".cc-shell-wrap")) return;
+  const typing = document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA");
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    ccPaletteOpen = !ccPaletteOpen;
+    renderApp();
+  } else if (e.key === "Escape" && ccPaletteOpen) {
+    ccPaletteOpen = false;
+    renderApp();
+  } else if (e.key === "Escape" && ccModal && !typing) {
+    ccModal = null;
+    renderApp();
+  }
+});

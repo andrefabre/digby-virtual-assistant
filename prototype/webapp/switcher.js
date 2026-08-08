@@ -1,13 +1,17 @@
 // Shared floating variant switcher — identical across all variants.
+// All three are now creative evolutions of the validated Cascade shell —
+// B keeps its letter since that's the one Andre already knows; A and C are
+// the new ones. Momentum and the old Conversation variant are retired —
+// still recoverable from this branch's git history if wanted later.
 const VARIANTS = [
-  { key: "A", name: "Momentum" },
+  { key: "A", name: "Command Center" },
   { key: "B", name: "Cascade" },
-  { key: "C", name: "Conversation" },
+  { key: "C", name: "Timeline" },
 ];
 
 function currentVariant() {
-  const key = new URLSearchParams(location.search).get("variant") || "A";
-  return VARIANTS.find((v) => v.key === key) ? key : "A";
+  const key = new URLSearchParams(location.search).get("variant") || "B";
+  return VARIANTS.find((v) => v.key === key) ? key : "B";
 }
 
 function setVariant(key) {

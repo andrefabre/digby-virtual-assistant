@@ -49,6 +49,22 @@ function heatmapSVG(days, { cell = 12, gap = 3 } = {}) {
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" class="heatmap">${rects}</svg>`;
 }
 
+// Small inline trend line. `values` = numbers, oldest first.
+function sparklineSVG(values, { width = 84, height = 26, color = "var(--seq-400)" } = {}) {
+  if (!values.length) return "";
+  const max = Math.max(1, ...values);
+  const stepX = values.length > 1 ? width / (values.length - 1) : 0;
+  const y = (v) => height - (v / max) * (height - 4) - 2;
+  const points = values.map((v, i) => `${(i * stepX).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const lastX = (values.length - 1) * stepX;
+  return `
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" class="sparkline">
+      <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="${lastX}" cy="${y(values[values.length - 1])}" r="2.5" fill="${color}" />
+    </svg>
+  `;
+}
+
 // Simple horizontal sequential bar chart. `data` = [[label, value], ...]
 function hbarSVG(data, { width = 260, barH = 16, gap = 6 } = {}) {
   const max = Math.max(1, ...data.map(([, v]) => v));

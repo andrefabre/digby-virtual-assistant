@@ -1,140 +1,122 @@
-// Variant C — "Conversation". Chat-first: Digby leads, the day's commitments
-// are revealed one at a time as quick-reply questions, and the Pathway/
-// Category model is tucked behind a slide-over rather than always on screen.
-// Structurally the opposite of B: no persistent chrome, one thing at a time.
+// Variant C — "Timeline". No sidebar, no tabs — one continuous scroll that
+// literally draws the Cascade: the Pathway's remaining horizon (2026->2033)
+// zoomed into this week, then Today / This week / Categories / History
+// stacked as sections, with a scrollspy to jump between them.
 
-let vcStaged = {};
-let vcAwaitingReasonFor = null;
-let vcPanelOpen = false;
+let tlObserver = null;
+
+const TL_SECTIONS = [
+  { id: "tl-today", label: "Today" },
+  { id: "tl-week", label: "Week" },
+  { id: "tl-categories", label: "Categories" },
+  { id: "tl-history", label: "History" },
+];
 
 function renderVariantC(state, root) {
-  root.classList.add("vc-shell-wrap");
+  root.classList.add("tl-shell-wrap");
 
   root.innerHTML = `
-    <div class="vc-shell">
-      <header class="vc-header">
-        <span class="vc-word">Digby</span>
-        <button id="vc-panel-toggle" class="vc-panel-btn">Cascade ${vcPanelOpen ? "✕" : "›"}</button>
+    <div class="tl-shell">
+      <header class="tl-header">
+        <span class="tl-word">Digby</span>
+        <span class="tl-dest">${state.pathway.destination_label}</span>
       </header>
-      <div class="vc-messages" id="vc-messages"></div>
-      <footer class="vc-input-row">
-        <input type="text" placeholder="Message Digby… (prototype — not wired up)" disabled />
-        <button disabled>Send</button>
-      </footer>
-    </div>
-    <aside class="vc-panel ${vcPanelOpen ? "open" : ""}">
-      <h2>${state.pathway.destination_label}</h2>
-      <ul class="vb-pathway-parts">${state.pathway.parts.map((p) => `<li>${p}</li>`).join("")}</ul>
-      <h3>Categories</h3>
-      ${state.categories.map((c) => `
-        <div class="vc-panel-cat">
-          <span class="va-dot" style="background:var(--cat-${c.slot})"></span>
-          <b>${c.name}</b> — ${c.floor_status === "decided" ? c.floor_hours_per_week + "h/wk floor" : "floor open"}
-          <div class="vc-panel-note">${c.floor_note}</div>
+
+      <section class="tl-zoom">
+        <div class="tl-zoom-row">
+          <span class="tl-zoom-label">Pathway — ${state.pathwayProgress.startYear}&ndash;${state.pathwayProgress.endYear}</span>
+          <div class="tl-bar tl-bar--pathway">
+            <div class="tl-bar-fill" style="width:${state.pathwayProgress.pct * 100}%"></div>
+            <div class="tl-bar-marker" style="left:${state.pathwayProgress.pct * 100}%" title="Today"></div>
+          </div>
+          <span class="tl-zoom-note">${Math.round(state.pathwayProgress.pct * 100)}% of the way to the Destination — illustrative, the Pathway has no tracked start date</span>
         </div>
-      `).join("")}
-      <h3>Streak</h3>
-      <p>🔥 ${state.streak} days</p>
-    </aside>
+        <div class="tl-zoom-row">
+          <span class="tl-zoom-label">This week</span>
+          <div class="tl-bar tl-bar--week">
+            ${state.weekDates.map((d) => `<div class="tl-week-seg ${d.isToday ? "tl-week-seg--today" : ""}" title="${d.name} ${d.label}"><span>${d.name[0]}</span></div>`).join("")}
+          </div>
+        </div>
+      </section>
+
+      ${state.escalations.length ? `
+        <div class="vb-banner tl-banner">
+          <strong>Escalation:</strong>
+          ${state.escalations.map((e) => `${e.category.name} (${e.count} misses)`).join(", ")}
+          — threshold is ${state.escalation_rule.misses}/${state.escalation_rule.window_days} days.
+          <button id="tl-recovery">Start Recovery Session</button>
+        </div>` : ""}
+
+      <section id="tl-today" class="tl-section">
+        <h2>Today — ${state.todayName}</h2>
+        <div class="vc-messages tl-chat" id="tl-chat-messages"></div>
+      </section>
+
+      <section id="tl-week" class="tl-section">
+        <h2>This week</h2>
+        <p class="vb-sub">${state.weekly_plan.week_label}</p>
+        ${renderCalendar(state)}
+      </section>
+
+      <section id="tl-categories" class="tl-section">
+        <h2>Categories</h2>
+        <div class="va-cat-row vb-cat-row-wide">
+          ${state.categories.map((c) => {
+            const floorPct = c.floor_status === "decided" ? Math.min(1, state.hoursThisWeek[c.id] / c.floor_hours_per_week) : null;
+            const risk = state.floorRisk.find((r) => r.category.id === c.id);
+            return `
+            <div class="va-cat" title="${c.floor_note}">
+              ${donutSVG({ size: 64, stroke: 7, pct: floorPct ?? 0, color: `var(--cat-${c.slot})`, track: `var(--cat-${c.slot}-soft)` })}
+              <span>${c.name}</span>
+              <small>${c.floor_status === "decided" ? c.floor_hours_per_week + "h floor" : "floor open"}</small>
+              ${risk ? `<span class="vb-risk vb-risk--${risk.atRisk ? "behind" : "ontrack"}">${risk.atRisk ? "behind pace" : "on pace"}</span>` : ""}
+            </div>`;
+          }).join("")}
+        </div>
+      </section>
+
+      <section id="tl-history" class="tl-section">
+        <h2>History</h2>
+        <div class="vb-history-grid">
+          <div><h3>Last 5 weeks</h3><div class="va-heatmap-wrap">${heatmapSVG(state.history)}</div></div>
+          <div><h3>Miss reasons</h3><div class="va-hbar-wrap">${hbarSVG(state.reasonTally)}</div></div>
+        </div>
+      </section>
+    </div>
+
+    <nav class="tl-scrollspy">
+      ${TL_SECTIONS.map((s) => `<button class="tl-spy-dot" data-target="${s.id}" title="${s.label}"></button>`).join("")}
+    </nav>
   `;
 
-  document.getElementById("vc-panel-toggle").onclick = () => { vcPanelOpen = !vcPanelOpen; renderVariantC(state, root); };
+  const recoveryBtn = document.getElementById("tl-recovery");
+  if (recoveryBtn) recoveryBtn.onclick = () => alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)");
 
-  const msgs = document.getElementById("vc-messages");
-  msgs.innerHTML = buildMessages(state).join("");
-  wireQuickReplies(state, msgs, () => renderVariantC(state, root));
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function bubble(from, html) {
-  return `<div class="vc-bubble vc-bubble--${from}">${html}</div>`;
-}
-
-function quickReplies(items) {
-  return `<div class="vc-quick-replies">${items.map((i) => `<button class="vc-qr" data-action="${i.action}" data-value="${i.value || ""}">${i.label}</button>`).join("")}</div>`;
-}
-
-function buildMessages(state) {
-  const out = [];
-  const todays = state.weekly_plan.commitments.filter((c) => c.day === state.todayName);
-
-  out.push(bubble("digby", `Morning. ${state.streak > 0 ? `You're on a <b>${state.streak}-day</b> streak.` : "Fresh start today."}`));
-
-  if (state.escalations.length && !state.alreadyCheckedInToday) {
-    out.push(bubble("digby", `Heads up — <b>${state.escalations.map((e) => e.category.name).join(", ")}</b> hit ${state.escalation_rule.misses} misses in ${state.escalation_rule.window_days} days.`));
-    out.push(quickReplies([{ label: "Start Recovery Session", action: "recovery" }, { label: "Not now", action: "dismiss" }]));
-  }
-
-  if (state.alreadyCheckedInToday) {
-    const todaysCheckin = state.checkins.find((c) => c.date === state.today);
-    out.push(bubble("digby", `Already checked in today. ${todaysCheckin.updates.filter((u) => u.status === "done").length} done, ${todaysCheckin.updates.filter((u) => u.status === "missed").length} missed. See you tomorrow.`));
-    return out;
-  }
-
-  if (todays.length === 0) {
-    out.push(bubble("digby", "Nothing scheduled today in the sample plan."));
-    return out;
-  }
-
-  out.push(bubble("digby", `Here's what's on for today (${state.todayName}):`));
-
-  for (const c of todays) {
-    const cat = state.categories.find((cc) => cc.id === c.category);
-    out.push(bubble("digby", `<b>${c.title}</b> — ${cat.name}, ${c.hours}h. Done or missed?`));
-
-    const staged = vcStaged[c.id];
-    if (staged) {
-      out.push(bubble("user", staged.status === "done" ? "Done" : `Missed — ${staged.reason_code ? staged.reason_code.replace(/_/g, " ") : "…"}`));
-      continue;
-    }
-
-    if (vcAwaitingReasonFor === c.id) {
-      out.push(bubble("user", "Missed"));
-      out.push(bubble("digby", "What happened?"));
-      out.push(quickReplies(state.reason_codes.map((r) => ({ label: r.replace(/_/g, " "), action: "reason", value: `${c.id}::${r}` }))));
-    } else {
-      out.push(quickReplies([
-        { label: "Done", action: "done", value: c.id },
-        { label: "Missed", action: "missed", value: c.id },
-      ]));
-    }
-    break; // reveal one commitment at a time
-  }
-
-  const allResolved = todays.every((c) => vcStaged[c.id]);
-  if (allResolved) {
-    out.push(bubble("digby", "That's everything for today — want me to log it?"));
-    out.push(quickReplies([{ label: "Submit check-in", action: "submit" }]));
-  }
-
-  return out;
-}
-
-// `onChange` re-renders whichever shell mounted this — Variant C re-renders
-// itself; Variant B (which reuses this wholesale for its Check-in tab)
-// re-renders its own sidebar shell instead. Never assume which one.
-function wireQuickReplies(state, msgs, onChange) {
-  msgs.querySelectorAll(".vc-qr").forEach((btn) => {
-    btn.onclick = () => {
-      const { action, value } = btn.dataset;
-      if (action === "recovery") { alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)"); return; }
-      if (action === "dismiss") { return; }
-      if (action === "done") { vcStaged[value] = { status: "done", reason_code: null }; onChange(); return; }
-      if (action === "missed") { vcAwaitingReasonFor = value; onChange(); return; }
-      if (action === "reason") {
-        const [id, reason] = value.split("::");
-        vcStaged[id] = { status: "missed", reason_code: reason };
-        vcAwaitingReasonFor = null;
-        onChange();
-        return;
-      }
-      if (action === "submit") {
-        const updates = Object.entries(vcStaged).map(([commitment_id, v]) => ({ commitment_id, ...v }));
-        const res = actions.submitCheckin(updates);
-        if (res.error) alert(res.error);
-        vcStaged = {};
-        vcAwaitingReasonFor = null;
-      }
-    };
+  root.querySelectorAll(".tl-spy-dot").forEach((dot) => {
+    dot.onclick = () => document.getElementById(dot.dataset.target).scrollIntoView({ behavior: "smooth", block: "start" });
   });
+
+  mountCheckinChat(state, document.getElementById("tl-chat-messages"), () => renderVariantC(state, root));
+
+  wireScrollspy(root);
+}
+
+function wireScrollspy(root) {
+  const dots = root.querySelectorAll(".tl-spy-dot");
+  const setActive = (id) => dots.forEach((d) => d.classList.toggle("active", d.dataset.target === id));
+  setActive("tl-today");
+
+  // Not available outside a real browser (e.g. the jsdom test harness) —
+  // the dots still render and are still clickable without it.
+  if (typeof IntersectionObserver === "undefined") return;
+
+  if (tlObserver) tlObserver.disconnect();
+  tlObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) setActive(visible[0].target.id);
+    },
+    { threshold: [0.3, 0.6] }
+  );
+  root.querySelectorAll(".tl-section").forEach((sec) => tlObserver.observe(sec));
 }
