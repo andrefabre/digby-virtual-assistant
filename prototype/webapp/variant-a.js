@@ -1,10 +1,9 @@
-// Variant A — "Command Center". Cockpit, not tabs: everything that matters
-// lives on one dense screen (KPIs + trend, Floor risk, calendar, chat
-// check-in), and a Ctrl+K search jumps straight to any commitment instead
-// of navigating a sidebar. Table/History are one click away in a modal.
+// Variant A — "Command Center". Andre's pick. Cockpit, not tabs: everything
+// lives on one screen. Order top to bottom: KPIs, then Check-in / View Plan
+// / History side by side, then Categories, then this week's Calendar.
+// Ctrl+K search still jumps straight to any commitment.
 
 let ccPaletteOpen = false;
-let ccModal = null; // "table" | "history" | null
 
 function renderVariantA(state, root) {
   root.classList.add("cc-shell-wrap");
@@ -15,8 +14,6 @@ function renderVariantA(state, root) {
         <span class="cc-word">Digby</span>
         <button class="cc-search" id="cc-search-btn">🔍 Jump to a commitment… <kbd>Ctrl K</kbd></button>
         <span class="cc-streak">🔥 ${state.streak}d</span>
-        <button class="cc-linkbtn" data-modal="table">Table</button>
-        <button class="cc-linkbtn" data-modal="history">History</button>
       </header>
 
       ${state.escalations.length ? `
@@ -43,6 +40,28 @@ function renderVariantA(state, root) {
           </div>
         </section>
 
+        <div class="cc-row-3">
+          <section class="cc-panel cc-panel--chat">
+            <h2>Check-in — ${state.todayName}</h2>
+            <div class="vc-messages cc-chat" id="cc-chat-messages"></div>
+          </section>
+
+          <section class="cc-panel cc-panel--viewplan">
+            <h2>View Plan</h2>
+            <div class="cc-scroll">${renderTableSwitch(state, () => renderVariantA(state, root)).html}</div>
+          </section>
+
+          <section class="cc-panel cc-panel--history">
+            <h2>History</h2>
+            <div class="cc-scroll">
+              <div class="vb-history-grid">
+                <div><h3>Last 5 weeks</h3><div class="va-heatmap-wrap">${heatmapSVG(state.history)}</div></div>
+                <div><h3>Miss reasons</h3><div class="va-hbar-wrap">${hbarSVG(state.reasonTally)}</div></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
         <section class="cc-panel cc-panel--categories">
           <h2>Categories</h2>
           <ul class="cc-cat-list">
@@ -63,11 +82,6 @@ function renderVariantA(state, root) {
           <h2>This week</h2>
           ${renderCalendar(state)}
         </section>
-
-        <section class="cc-panel cc-panel--chat">
-          <h2>Check-in — ${state.todayName}</h2>
-          <div class="vc-messages cc-chat" id="cc-chat-messages"></div>
-        </section>
       </div>
     </div>
 
@@ -77,42 +91,17 @@ function renderVariantA(state, root) {
         <ul class="cc-palette-results" id="cc-palette-results"></ul>
       </div>
     </div>
-
-    ${ccModal ? renderModal(state, root) : ""}
   `;
 
   wireTopbar(state, root);
   wirePalette(state, root);
-  wireModal(state, root);
+  renderTableSwitch(state, () => renderVariantA(state, root)).wire(root);
 
   mountCheckinChat(state, document.getElementById("cc-chat-messages"), () => renderVariantA(state, root));
 }
 
-function renderModal(state, root) {
-  const title = ccModal === "table" ? "Weekly Execution Plan — Table" : "History";
-  const body = ccModal === "table"
-    ? renderTableSwitch(state, () => renderVariantA(state, root)).html
-    : `
-      <div class="vb-history-grid">
-        <div><h2>Last 5 weeks</h2><div class="va-heatmap-wrap">${heatmapSVG(state.history)}</div></div>
-        <div><h2>Miss reasons</h2><div class="va-hbar-wrap">${hbarSVG(state.reasonTally)}</div></div>
-      </div>
-    `;
-  return `
-    <div class="cc-modal-backdrop" id="cc-modal-backdrop">
-      <div class="cc-modal">
-        <header><h1>${title}</h1><button id="cc-modal-close">✕</button></header>
-        <div class="cc-modal-body">${body}</div>
-      </div>
-    </div>
-  `;
-}
-
 function wireTopbar(state, root) {
   document.getElementById("cc-search-btn").onclick = () => { ccPaletteOpen = true; renderVariantA(state, root); };
-  root.querySelectorAll(".cc-linkbtn").forEach((btn) => {
-    btn.onclick = () => { ccModal = btn.dataset.modal; renderVariantA(state, root); };
-  });
   const recoveryBtn = document.getElementById("cc-recovery");
   if (recoveryBtn) recoveryBtn.onclick = () => alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)");
 }
@@ -148,26 +137,14 @@ function wirePalette(state, root) {
   backdrop.onclick = (e) => { if (e.target === backdrop) { ccPaletteOpen = false; renderVariantA(state, root); } };
 }
 
-function wireModal(state, root) {
-  const backdrop = document.getElementById("cc-modal-backdrop");
-  if (!backdrop) return;
-  document.getElementById("cc-modal-close").onclick = () => { ccModal = null; renderVariantA(state, root); };
-  backdrop.onclick = (e) => { if (e.target === backdrop) { ccModal = null; renderVariantA(state, root); } };
-  if (ccModal === "table") renderTableSwitch(state, () => renderVariantA(state, root)).wire(document.querySelector(".cc-modal-body"));
-}
-
 document.addEventListener("keydown", (e) => {
   if (!document.querySelector(".cc-shell-wrap")) return;
-  const typing = document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA");
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
     e.preventDefault();
     ccPaletteOpen = !ccPaletteOpen;
     renderApp();
   } else if (e.key === "Escape" && ccPaletteOpen) {
     ccPaletteOpen = false;
-    renderApp();
-  } else if (e.key === "Escape" && ccModal && !typing) {
-    ccModal = null;
     renderApp();
   }
 });
