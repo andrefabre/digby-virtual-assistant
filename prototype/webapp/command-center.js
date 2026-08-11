@@ -1,13 +1,14 @@
-// Variant A — "Command Center". Andre's pick. Cockpit, not tabs.
-// Layout: a row of 4 always-visible cards — KPIs, Categories, View Plan,
-// History — where View Plan and History are compact teasers that open a
-// full modal on click; then Calendar full-width; then Check-in full-width.
-// Ctrl+K search still jumps straight to any commitment.
+// Command Center — the winning design from the prototype round (see
+// README.md for the other two directions considered and why this one won).
+// Cockpit, not tabs: a row of 4 always-visible cards (KPIs, View Plan,
+// Categories, History — View Plan/History are teasers that open a full
+// modal on click), then Calendar full-width, then Check-in full-width.
+// Ctrl+K search jumps straight to any commitment.
 
 let ccPaletteOpen = false;
 let ccModal = null; // "viewplan" | "history" | null
 
-function renderVariantA(state, root) {
+function renderApp(state, root) {
   root.classList.add("cc-shell-wrap");
 
   const commitments = state.weekly_plan.commitments;
@@ -112,13 +113,13 @@ function renderVariantA(state, root) {
   wireTeasers(state, root);
   wireModal(state, root);
 
-  mountCheckinChat(state, document.getElementById("cc-chat-messages"), () => renderVariantA(state, root));
+  mountCheckinChat(state, document.getElementById("cc-chat-messages"), () => renderApp(state, root));
 }
 
 function renderModal(state, root) {
   const title = ccModal === "viewplan" ? "Weekly Execution Plan — View Plan" : "History";
   const body = ccModal === "viewplan"
-    ? renderTableSwitch(state, () => renderVariantA(state, root)).html
+    ? renderTableSwitch(state, () => renderApp(state, root)).html
     : `
       <div class="vb-history-grid">
         <div><h2>Last 5 weeks</h2><div class="va-heatmap-wrap">${heatmapSVG(state.history)}</div></div>
@@ -136,14 +137,14 @@ function renderModal(state, root) {
 }
 
 function wireTopbar(state, root) {
-  document.getElementById("cc-search-btn").onclick = () => { ccPaletteOpen = true; renderVariantA(state, root); };
+  document.getElementById("cc-search-btn").onclick = () => { ccPaletteOpen = true; renderApp(state, root); };
   const recoveryBtn = document.getElementById("cc-recovery");
   if (recoveryBtn) recoveryBtn.onclick = () => alert("Recovery Session started — 15 minutes on the clock. (Prototype stub.)");
 }
 
 function wireTeasers(state, root) {
   root.querySelectorAll(".cc-panel--teaser").forEach((card) => {
-    const open = () => { ccModal = card.dataset.modal; renderVariantA(state, root); };
+    const open = () => { ccModal = card.dataset.modal; renderApp(state, root); };
     card.onclick = open;
     card.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
   });
@@ -168,7 +169,7 @@ function wirePalette(state, root) {
       li.onclick = () => {
         const c = state.weekly_plan.commitments.find((cc) => cc.id === li.dataset.id);
         ccPaletteOpen = false;
-        renderVariantA(state, root);
+        renderApp(state, root);
         alert(`${c.title}\n${c.day} at ${c.start} · ${c.hours}h · ${c.status}`);
       };
     });
@@ -177,29 +178,30 @@ function wirePalette(state, root) {
   input.oninput = () => renderResults(input.value);
   if (ccPaletteOpen) { input.focus(); renderResults(""); }
 
-  backdrop.onclick = (e) => { if (e.target === backdrop) { ccPaletteOpen = false; renderVariantA(state, root); } };
+  backdrop.onclick = (e) => { if (e.target === backdrop) { ccPaletteOpen = false; renderApp(state, root); } };
 }
 
 function wireModal(state, root) {
   const backdrop = document.getElementById("cc-modal-backdrop");
   if (!backdrop) return;
-  document.getElementById("cc-modal-close").onclick = () => { ccModal = null; renderVariantA(state, root); };
-  backdrop.onclick = (e) => { if (e.target === backdrop) { ccModal = null; renderVariantA(state, root); } };
-  if (ccModal === "viewplan") renderTableSwitch(state, () => renderVariantA(state, root)).wire(document.querySelector(".cc-modal-body"));
+  document.getElementById("cc-modal-close").onclick = () => { ccModal = null; renderApp(state, root); };
+  backdrop.onclick = (e) => { if (e.target === backdrop) { ccModal = null; renderApp(state, root); } };
+  if (ccModal === "viewplan") renderTableSwitch(state, () => renderApp(state, root)).wire(document.querySelector(".cc-modal-body"));
 }
 
 document.addEventListener("keydown", (e) => {
-  if (!document.querySelector(".cc-shell-wrap")) return;
+  const root = document.getElementById("app");
+  if (!root || !latestState) return;
   const typing = document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA");
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
     e.preventDefault();
     ccPaletteOpen = !ccPaletteOpen;
-    renderApp();
+    renderApp(latestState, root);
   } else if (e.key === "Escape" && ccPaletteOpen) {
     ccPaletteOpen = false;
-    renderApp();
+    renderApp(latestState, root);
   } else if (e.key === "Escape" && ccModal && !typing) {
     ccModal = null;
-    renderApp();
+    renderApp(latestState, root);
   }
 });

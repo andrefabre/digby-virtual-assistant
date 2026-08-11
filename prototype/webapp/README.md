@@ -1,17 +1,14 @@
 # Digby web UI — prototype
 
-Round two. Andre picked Variant B ("Cascade" — sidebar, tabs, calendar,
-table, chat check-in) from the first round and asked for three creative
-evolutions of it rather than more unrelated concepts. All three now share
-the same domain foundation and the same shared widgets (calendar, table,
-chat check-in — see below) but reimagine the shell around them: tabs vs.
-a single cockpit screen vs. a continuous scroll. Switchable live via a
-`?variant=` URL param and the floating bottom bar, per this repo's own
-[`prototype` skill](../../.claude/skills/prototype/UI.md).
+**Verdict: Command Center.** Two rounds of exploration, following this
+repo's own [`prototype` skill](../../.claude/skills/prototype/UI.md), landed
+on a cockpit-style dashboard — no sidebar, no tabs, everything that matters
+on one screen. This folder now holds only that design.
 
 **Not the MVP delivery artifact.** Per [issue #17](https://github.com/andrefabre/digby-virtual-assistant/issues/17)
-the MVP is CLI/markdown; a richer UI is explicitly deferred. This exists to
-make the current design tangible and to compare shapes, nothing more.
+the MVP is CLI/markdown; a richer UI is explicitly deferred. This is
+exploratory input for whenever that work is prioritized — not a commitment
+to build it now.
 
 ## Run it
 
@@ -21,42 +18,37 @@ No dependencies beyond Python's standard library.
 python prototype/webapp/server.py
 ```
 
-Then open http://127.0.0.1:8765 — flip between variants with the bottom bar,
-the `←`/`→` keys, or by editing `?variant=A|B|C` in the address bar.
+Then open http://127.0.0.1:8765
 
 **No persistence.** All state (including check-ins) lives in memory in the
-browser tab — a reload resets everything to the seed data in `data.js`. This
-is deliberate: the question here is what the UI should look like, not
-whether a backend works.
+browser tab — a reload resets everything to the seed data in `data.js`.
 
-## The three variants
+## What it looks like
 
-- **A — Command Center**: no sidebar, no tabs — everything that matters
-  (streak + 14-day trend, Floor-risk per Category, this week's calendar,
-  today's check-in) lives on one dense cockpit screen. New: a **Ctrl+K
-  command palette** to jump straight to any commitment by typing, and a
-  **Floor-risk** calculation (is each Category's hours-so-far pace on track
-  to hit its Floor by Sunday?). Table and History open in a modal instead of
-  a tab.
-- **B — Cascade**: the validated baseline from round one, refined —
-  persistent sidebar, Dashboard/Calendar/Table/Check-in/History as tabs.
-  Now shows the same Floor-risk chip as the other two.
-- **C — Timeline**: no sidebar, no tabs — one continuous scroll. Opens with
-  a **Cascade zoom**: a bar showing where today sits on the Pathway's
-  2026→2033 horizon, zoomed into a second bar for this week. Today / This
-  week / Categories / History are stacked sections below, with a **scrollspy**
-  (dots, right edge) to jump between them instead of navigating a menu.
+Top to bottom:
 
-All three mount the same three widgets rather than re-implementing them:
-`calendar-widget.js` (the time-grid week view), `table-widget.js` (the
-List/By Day/By Category switcher), and `checkin-chat.js` (the conversational
-check-in engine, originally round one's Variant C, now used everywhere).
-Only the shell — how you navigate, how much is visible at once, the primary
-affordance — differs between them.
+1. **A row of 4 cards** — KPIs (streak + 14-day trend), View Plan, Categories,
+   History. View Plan and History are compact teasers (a stat summary / a
+   mini heatmap thumbnail) that open the full detail in a modal on click.
+2. **This week's Calendar** — a Mon–Sun time grid, full width.
+3. **Check-in** — the conversational quick-reply flow, full width.
 
-Round one's Momentum (tap-first phone card) and Conversation-as-a-whole-page
-variants are retired now that B won; still recoverable from this branch's
-git history (`git log -- prototype/webapp`) if worth revisiting.
+Plus a **Ctrl+K command palette** (header search box) to jump straight to
+any commitment by typing, and a **Floor-risk** chip on each Category (is
+this week's hours-so-far pace on track to hit the Floor by Sunday?).
+
+## How it's built
+
+- `data.js` — seed data + in-memory store (pathway, categories, the
+  week's commitments, demo history) and derived state (streak, escalations,
+  floor risk, pathway progress).
+- `viz.js` — small SVG chart primitives (heatmap, sparkline, horizontal bar).
+- `checkin-chat.js`, `calendar-widget.js`, `table-widget.js` — the three
+  reusable content widgets Command Center mounts (chat check-in, the
+  calendar grid, and the List/By Day/By Category table switcher inside the
+  View Plan modal).
+- `command-center.js` — the shell: layout, command palette, modals.
+- `app.js` — boots it: subscribes to the store, renders on every change.
 
 ## What's real vs. placeholder
 
@@ -66,28 +58,38 @@ git history (`git log -- prototype/webapp`) if worth revisiting.
 - The other four Categories' Floors are marked **open** — see the `source`
   issue shown on each card.
 - **Floor-risk** ("behind pace" / "on pace") is a real calculation off the
-  in-memory state (hours done so far this week, projected to Sunday) — not
-  a decided Digby feature, just this prototype asking "would this be
-  useful?"
-- The **Pathway zoom bar** (Timeline) uses 2026 as a start point for the
-  visual only — that's this planning cycle's start, not a tracked start
-  date for the Pathway itself, which CONTEXT.md doesn't define.
+  in-memory state — not a decided Digby feature, just this prototype asking
+  "would this be useful?"
 - The **Weekly Execution Plan**, 5-week history heatmap, and reason-code
   tally are sample data, seeded deterministically so they look the same
   every reload — not a real plan or real history.
 - Reason codes are illustrative; CONTEXT.md requires one on every missed
   commitment but doesn't fix the vocabulary yet.
-- The chat input placeholder, and clicking a Command Center search result,
-  are decorative/stubbed — not wired to anything real.
+- The chat input placeholder and clicking a search result are
+  decorative/stubbed — not wired to anything real.
 
-## Capturing a decision
+## How we got here
 
-Once a variant (or a mix) is picked, fold that into the real design/build
-path and leave the rest of this folder on this throwaway branch, per the
-`prototype` skill's capture step. Don't promote this code straight to
-production; it was written under prototype constraints (no tests, no error
-handling beyond what keeps it running, no abstractions beyond the three
-shared widgets).
+Two rounds, three variants each, per the `prototype` skill:
+
+**Round one** (structurally different concepts): Momentum (habit-tracker
+derived — tap-to-check phone card, streak, heatmap), Cascade (OKR-dashboard
+derived — sidebar, tabs, Pathway→Category→Floor tree), Conversation
+(chat-first — Digby leads, one commitment revealed at a time). Andre picked
+**Cascade**.
+
+**Round two** (creative evolutions of Cascade, features welcome): Command
+Center (cockpit, no chrome, command palette, floor-risk), a refined Cascade,
+and Timeline (single continuous scroll with a Pathway-to-2033 zoom bar and a
+scrollspy). Andre picked **Command Center**, then iterated on its layout
+directly (card order, equal-height row, View Plan/History as modal teasers)
+until it looked right in a real browser.
+
+All of that — every round-one and round-two variant, and the layout
+iterations in between — is preserved in this branch's git history
+(`git log -- prototype/webapp`), per the skill's rule that the full set of
+variants is the primary source and belongs on the throwaway branch, not the
+bin.
 
 ## Research sources (round one)
 

@@ -1,21 +1,6 @@
 // Small shared SVG chart primitives — generic drawing helpers, not layout.
 // Each variant is free to arrange/skip these however it likes.
 
-function donutSVG({ size = 96, stroke = 10, pct = 0, color = "var(--cat-1)", track = "var(--gridline)", label = "" }) {
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const dash = Math.max(0, Math.min(1, pct)) * c;
-  return `
-    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="donut">
-      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${track}" stroke-width="${stroke}" />
-      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
-        stroke-linecap="round" stroke-dasharray="${dash} ${c - dash}"
-        transform="rotate(-90 ${size / 2} ${size / 2})" />
-      ${label ? `<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" class="donut-label">${label}</text>` : ""}
-    </svg>
-  `;
-}
-
 // Sequential blue ramp step for a 0..maxDone value (heatmap cell).
 function seqStep(done, maxDone) {
   if (done <= 0) return "var(--gridline)";

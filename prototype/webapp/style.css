@@ -72,63 +72,10 @@ a { color: inherit; }
 
 body { background: var(--page); color: var(--text-primary); }
 
-/* ---------- Switcher (shared, visually distinct from every variant) ---------- */
-#proto-switcher {
-  position: fixed;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #111;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 999px;
-  padding: 0.4rem 0.5rem;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
-  font-family: ui-monospace, "SF Mono", Consolas, monospace;
-  font-size: 0.8rem;
-}
-#proto-switcher button {
-  background: rgba(255,255,255,0.08);
-  border: none;
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s;
-}
-#proto-switcher button:hover { background: rgba(255,255,255,0.2); }
-#proto-switcher .label {
-  min-width: 150px;
-  text-align: center;
-  white-space: nowrap;
-}
-#proto-switcher .label b { color: #ffd54a; }
-#proto-switcher .dots { display: flex; gap: 4px; margin-left: 0.25rem; }
-#proto-switcher .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.25); }
-#proto-switcher .dot.active { background: #ffd54a; }
-
 #app { min-height: 100vh; padding-bottom: 70px; }
 
-/* ================= Shared widgets (used by 2+ variants) ================= */
-.va-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0.5rem 0 1.25rem; }
-.donut-label { font-size: 22px; font-weight: 700; fill: var(--text-primary); }
-.va-streak { margin-top: 0.6rem; font-weight: 700; }
-.va-week-label { color: var(--text-muted); font-size: 0.78rem; margin-top: 0.15rem; }
-
-.va-cat-row { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-.va-cat { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; width: 72px; text-align: center; }
-.va-cat span { font-size: 0.72rem; font-weight: 600; margin-top: 0.2rem; }
-.va-cat small { font-size: 0.65rem; color: var(--text-muted); }
+/* ================= Shared widgets ================= */
 .va-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
-
 .va-heatmap-wrap, .va-hbar-wrap { margin-bottom: 1.25rem; overflow-x: auto; }
 .hbar-label { font-size: 11px; fill: var(--text-secondary); }
 .hbar-value { font-size: 11px; fill: var(--text-secondary); }
@@ -138,39 +85,9 @@ body { background: var(--page); color: var(--text-primary); }
 .vb-risk--behind { background: color-mix(in srgb, var(--status-critical) 18%, transparent); color: var(--status-critical); }
 .vb-risk--ontrack { background: color-mix(in srgb, var(--status-good) 16%, transparent); color: var(--success-text); }
 
-/* ================= Variant B — Cascade ================= */
-.vb-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-.vb-sidebar {
-  background: var(--surface-1);
-  border-right: 1px solid var(--border);
-  padding: 1.25rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-.vb-word { font-weight: 700; font-size: 1.15rem; }
-.vb-pathway-card { background: var(--page); border-radius: 10px; padding: 0.75rem; font-size: 0.78rem; }
-.vb-pathway-title { font-weight: 700; margin-bottom: 0.4rem; }
-.vb-pathway-parts li { color: var(--text-secondary); margin-bottom: 0.25rem; padding-left: 0.8rem; position: relative; }
-.vb-pathway-parts li::before { content: "•"; position: absolute; left: 0; color: var(--text-muted); }
-.vb-nav { display: flex; flex-direction: column; gap: 0.25rem; }
-.vb-nav-item { text-align: left; background: none; border: none; padding: 0.55rem 0.7rem; border-radius: 8px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; }
-.vb-nav-item.active { background: var(--cat-1-soft); color: var(--cat-1); font-weight: 600; }
-.vb-nav-item:hover:not(.active) { background: var(--page); }
-.vb-nav-section {
-  margin: 0.5rem 0 -0.15rem 0.7rem;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
-.vb-main { padding: 1.5rem 2rem 3rem; max-width: 980px; }
-.vb-main h1 { margin: 0 0 1rem; font-size: 1.3rem; }
-.vb-main h2 { font-size: 1rem; margin: 1.5rem 0 0.75rem; }
-.vb-sub { color: var(--text-muted); font-size: 0.85rem; margin-top: -0.5rem; }
-
+/* ================= Shared widget internals ("vb-" from the retired Cascade
+   variant, now just this repo's naming for calendar-widget.js/table-widget.js
+   output — nothing here is Cascade-shell-specific anymore) ================= */
 .vb-banner {
   background: color-mix(in srgb, var(--status-critical) 12%, var(--surface-1));
   border: 1px solid var(--status-critical);
@@ -180,19 +97,6 @@ body { background: var(--page); color: var(--text-primary); }
   margin-bottom: 1.25rem;
 }
 .vb-banner button { margin-left: 0.6rem; background: var(--status-critical); color: #fff; border: none; border-radius: 6px; padding: 0.3rem 0.6rem; cursor: pointer; }
-
-.vb-breadcrumb { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; }
-.vb-breadcrumb-sep { margin: 0 0.35rem; }
-.vb-main .va-hero { padding-top: 0; }
-.vb-cat-row-wide.va-cat-row {
-  flex-wrap: wrap;
-  overflow-x: visible;
-  justify-content: center;
-  gap: 1.5rem;
-}
-.vb-cat-row-wide .va-cat { width: 100px; }
-
-.vb-chat { max-height: 62vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: var(--page); }
 
 .vb-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
 .vb-table th { text-align: left; padding: 0.5rem; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--baseline); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
@@ -310,13 +214,12 @@ body { background: var(--page); color: var(--text-primary); }
 .vb-cat-item--done { opacity: 0.6; }
 .vb-history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 @media (max-width: 760px) {
-  .vb-shell { grid-template-columns: 1fr; }
-  .vb-sidebar { flex-direction: row; overflow-x: auto; }
   .vb-history-grid { grid-template-columns: 1fr; }
 }
 
 /* ================= Shared chat check-in widget ================= */
-/* "vc-" from its Variant C origin — now mounted by all three variants. */
+/* "vc-" from its original Conversation-variant origin — now Command
+   Center's check-in widget, mounted via checkin-chat.js. */
 .vc-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
 .vc-bubble { max-width: 78%; padding: 0.55rem 0.85rem; border-radius: 16px; font-size: 0.88rem; line-height: 1.4; }
 .vc-bubble--digby { align-self: flex-start; background: var(--surface-1); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
@@ -328,7 +231,7 @@ body { background: var(--page); color: var(--text-primary); }
 
 .sparkline { display: block; flex: 0 0 auto; }
 
-/* ================= Variant A — Command Center ================= */
+/* ================= Command Center shell ================= */
 .cc-shell { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem 3rem; }
 .cc-topbar {
   display: flex;
@@ -423,47 +326,4 @@ body { background: var(--page); color: var(--text-primary); }
 }
 @media (max-width: 560px) {
   .cc-row-4 { grid-template-columns: 1fr; }
-}
-
-/* ================= Variant C — Timeline ================= */
-.tl-shell { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-.tl-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; }
-.tl-word { font-weight: 700; font-size: 1.15rem; }
-.tl-dest { color: var(--text-muted); font-size: 0.82rem; }
-
-.tl-zoom { margin-bottom: 1.5rem; }
-.tl-zoom-row { margin-bottom: 1rem; }
-.tl-zoom-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
-.tl-bar { position: relative; height: 10px; border-radius: 999px; background: var(--gridline); overflow: visible; margin: 0.4rem 0 0.3rem; }
-.tl-bar--pathway { overflow: hidden; }
-.tl-bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--seq-400); border-radius: 999px; }
-.tl-bar-marker { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-primary); }
-.tl-zoom-note { font-size: 0.72rem; color: var(--text-muted); }
-
-.tl-bar--week { display: flex; gap: 3px; height: 32px; background: none; }
-.tl-week-seg { flex: 1; background: var(--gridline); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
-.tl-week-seg--today { background: var(--cat-1); color: #fff; }
-
-.tl-banner { margin-bottom: 2rem; }
-
-.tl-section { padding: 2.25rem 0; border-top: 1px solid var(--gridline); scroll-margin-top: 1.5rem; }
-.tl-section:first-of-type { border-top: none; padding-top: 0.5rem; }
-.tl-section h2 { font-size: 1.05rem; margin: 0 0 1rem; }
-.tl-chat { max-height: 55vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: var(--page); }
-
-.tl-scrollspy {
-  position: fixed;
-  right: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 500;
-}
-.tl-spy-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--baseline); border: none; cursor: pointer; padding: 0; transition: all 0.15s; }
-.tl-spy-dot:hover { background: var(--text-muted); }
-.tl-spy-dot.active { background: var(--cat-1); width: 11px; height: 11px; }
-@media (max-width: 640px) {
-  .tl-scrollspy { display: none; }
 }
