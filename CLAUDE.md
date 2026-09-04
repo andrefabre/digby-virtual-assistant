@@ -9,6 +9,7 @@ A life-management assistant for a single user (Andre). It holds a planning casca
 | File | Why |
 | --- | --- |
 | [CONTEXT.md](./CONTEXT.md) | The glossary. Every domain term, and what *not* to call it. Challenge any wording that conflicts with it. |
+| [docs/pathway.md](./docs/pathway.md) | The canonical Destination record — statement, milestone dates, certainty. Machine-readable frontmatter plus a human-readable copy below it. |
 | [docs/adr/](./docs/adr/) | Decisions already made, with the reasoning and the rejected alternatives. **ADRs are immutable** — never edit one, supersede it. See [docs/adr/README.md](./docs/adr/README.md). Check the status line; superseded ones point at their replacement. |
 | [Wayfinder map #2](https://github.com/andrefabre/digby-virtual-assistant/issues/2) | Destination, decisions so far, open fog, and what is out of scope. |
 

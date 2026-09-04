@@ -9,7 +9,7 @@ The long-range arc above the yearly layer — the multi-year Destination every C
 _Avoid_: Vision, 5-year plan, long-term plan
 
 **Destination**:
-What completing the Pathway looks like, reached **end of 2033**. Three parts, all required: the **Unrestricted Practising Certificate** held, a **specialist practitioner role** in Legal Tech worked as an employee or contractor, and **Exegesis running as a revenue-generating product business**. Not an Incorporated Legal Practice — that stays available as a choice after 2033, but is not part of the Destination. See ADR 0003.
+What completing the Pathway looks like, reached **end of 2033**. Three parts, all required: the **Unrestricted Practising Certificate** held, a **specialist practitioner role** in Legal Tech worked as an employee or contractor, and **Exegesis running as a revenue-generating product business**. Not an Incorporated Legal Practice — that stays available as a choice after 2033, but is not part of the Destination. The canonical record, including the milestone dates, is [docs/pathway.md](./docs/pathway.md); the reasoning is in ADR 0003.
 
 **Legal Tech**:
 The convergence point of every Category — the market and expertise domain where the credential, the business and the employable skillset all compound. Adopted mid-2026 when previously separate goals were recognised as pointing the same way.
