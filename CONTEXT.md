@@ -28,10 +28,9 @@ The derivation chain from Pathway down to daily commitments. Every level is trac
 One of the five top-level areas every goal belongs to: Education, Career, Business, Health & Fitness, Financial. The taxonomy the whole Cascade hangs off. Each Category has a durable purpose (what it is for) kept separate from its current target, contents and goal-kinds, which can change without the definition changing. The canonical record is [docs/categories.md](./docs/categories.md); priority order is ADR 0002.
 _Avoid_: Domain, life area, area, pillar
 
-**Phase** — ⚠️ **contested, do not use unqualified** (see [issue #35](https://github.com/andrefabre/digby-virtual-assistant/issues/35)):
-The word carries two unrelated meanings in this workspace and has no canonical sense until that ticket resolves.
-- *Delivery sense* — a package of work in a product build. Established and widespread: `01-drmo-business/`, `02-dlv-business/`, `11-legal-agentic-business/`, and every one of the 21 uses in the Q1 2026 weekly plans.
-- *Study-time sense* — a date-bounded operating period with its own time-allocation rules: pre-semester, semester in session, exam period, post-semester break. New as of July 2026 and confined to the three `13-strategic-plans/2026-Q3-Q4/` documents.
+**Phase**:
+A stage of building, delivering or releasing something — a package of work in a product build. Established and widespread: `01-drmo-business/`, `02-dlv-business/`, `11-legal-agentic-business/`, and every one of the 21 uses in the Q1 2026 weekly plans. Resolved 2026-09-11 ([issue #35](https://github.com/andrefabre/digby-virtual-assistant/issues/35)) in favour of this sense over a competing one, on the grounds that it matches standard project-management usage.
+_Avoid_: **A date-bounded study operating period** (pre-semester, semester in session, exam period, post-semester break) — this was wrongly called Phase in the three `13-strategic-plans/2026-Q3-Q4/` documents from July 2026. That concept still needs its own name — ⚠️ **unresolved, see [issue #42](https://github.com/andrefabre/digby-virtual-assistant/issues/42)** — do not call it Phase, Stage (too easily confused with this entry), or anything else until it lands.
 
 **Break**:
 The interval between the end of one semester's exams and the start of the next. Roughly fourteen weeks at end of year and six mid-year — about twenty weeks annually. The only period in which certification study carries a Floor.
