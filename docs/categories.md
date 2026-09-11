@@ -90,12 +90,18 @@ categories:
       certainty: estimate
     contents:
       current_weight_kg: 142
+      weight_recorded: "2026-09-04"
       near_term_goals:
-        - Lose 20kg by end of 2026
+        - "142kg → 122kg by end of 2026 (20kg loss, no interim milestone)"
         - Complete a 15km race, New Year's Day
+    floor:
+      commitment: 1h/day exercise (7h/week)
+      non_negotiable: true
     goal_kinds:
       - Weight / health-metric milestones
       - Event-training goals
+    open:
+      - "Mental health / downtime: deferred, not yet tracked (issue #31)"
 ---
 
 # Categories
@@ -198,7 +204,19 @@ draw on.
 **Target (end 2033, estimate):** 85kg; cholesterol and blood pressure in
 a healthy range for age; a triathlon completed.
 
-**Contents (current):** 142kg. Near-term goals — lose 20kg by end of
-2026; complete a 15km race, New Year's Day.
+**Floor:** 1h/day exercise (7h/week), non-negotiable. Set lower than the
+previous 2h/day ("14h/week, non-negotiable") because that number was
+missed every week in 2026 — a Floor that is never met trains the user to
+ignore it. Raise it once 1h/day holds for several consecutive weeks.
+
+**Contents (current):** 142kg as at 2026-09-04. Near-term goal — 122kg
+by end of 2026 (20kg loss, no interim milestone; the previous 110kg-by-
+Aug-28 milestone is dropped as unreachable). Also: complete a 15km race,
+New Year's Day.
 
 **Goal-kinds:** weight/health-metric milestones, event-training goals.
+
+**Open:** mental health/downtime is named in *for* but has no tracked
+allocation yet — deferred (issue #31). Ocean-swim training anchors
+(Leighton Beach, Coogee Beach, Rockingham) are dropped for 2026; may
+return in 2027.
