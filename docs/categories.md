@@ -69,14 +69,40 @@ categories:
       by: "2033-12"
       certainty: fixed
     contents:
-      - DRMO (Pillar 1)
+      - DRMO (Pillar 1) — live, 155 doors, 3 Stripe products, 0 sales to date
       - Legal AI (Pillar 2)
       - DLV (Pillar 3)
       - Cyber Services (Pillar 4)
+      - "Portfolio site — business half: exegete.com.au service pages (see Career, issue #32)"
+    floor:
+      commitment: none
+      note: >
+        No Floor through end of 2026 — reviewed Jan 2027, once ~6 weeks
+        of Break exist before Sem 1 2027. One placeholder line kept in
+        the Weekly Execution Plan (not per-Pillar) for optional ad-hoc
+        momentum, unprotected.
+    review_gates:
+      - date: "2026-07-25"
+        note: >
+          Sep 14 gate held early. Found analytics instrumentation
+          broken (Umami free tier gone), not an absence of demand — no
+          per-Pillar signal call was possible.
+      - date: "2026-11-01"
+        note: "Process check only — is analytics working again, yes/no."
+      - date: "2026-12-31"
+        note: >
+          Binary traction check — analytics collecting for all doors,
+          yes/no. No per-Pillar kill/adjust/scale until the Jan 2027
+          review.
     goal_kinds:
       - Door signal
       - Review Gate decisions (kill / adjust / scale)
       - Service-to-product pivots
+    open:
+      - >
+        No long-range revenue/customer/date target through 2030 —
+        deferred until a Pillar is chosen to proceed with, post Jan
+        2027 review.
 
   - name: Financial
     for: >
@@ -209,11 +235,28 @@ independently.
 **Target (end 2033, fixed):** Exegesis running as a revenue-generating
 product business.
 
-**Contents:** DRMO (Pillar 1), Legal AI (Pillar 2), DLV (Pillar 3), Cyber
-Services (Pillar 4).
+**Contents:** DRMO (Pillar 1) — live, 155 doors, 3 Stripe products, 0
+sales to date; Legal AI (Pillar 2); DLV (Pillar 3); Cyber Services
+(Pillar 4). Also the portfolio site's business half — exegete.com.au
+service pages (see Career, #32).
+
+**Floor:** none through end of 2026 — revisit Jan 2027, once ~6 weeks
+of Break exist before Sem 1 2027. One placeholder line kept in the
+Weekly Execution Plan (not per-Pillar) for optional ad-hoc momentum,
+unprotected.
+
+**Review gates:** Sep 14 held early (Jul 25) — found the analytics
+instrumentation broken (Umami free tier gone), not an absence of
+demand; no per-Pillar signal call was possible. ~Nov 1 is a process
+check only — is analytics working again, yes/no. Dec 31 is a binary
+traction check — analytics collecting for all doors, yes/no. No
+per-Pillar kill/adjust/scale decision until the Jan 2027 review.
 
 **Goal-kinds:** Door signal, Review Gate decisions (kill / adjust /
 scale), service-to-product pivots.
+
+**Open:** no long-range revenue/customer/date target through
+2030 — deferred until a Pillar is chosen to proceed with.
 
 ## Financial
 
