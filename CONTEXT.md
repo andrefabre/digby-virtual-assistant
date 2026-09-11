@@ -36,9 +36,13 @@ _Avoid_: **A date-bounded study operating period** (pre-semester, semester in se
 The interval between the end of one semester's exams and the start of the next. Roughly fourteen weeks at end of year and six mid-year — about twenty weeks annually. The only period in which certification study carries a Floor.
 _Avoid_: Holidays, semester break, downtime
 
+**Q1/Q2 Plan**, **Q3/Q4 Plan**:
+The Cascade's mid-layer, sitting between the yearly layer and the Weekly Execution Plan: a six-month plan, one per calendar half (Jan-Jun, Jul-Dec), each containing exactly one semester. Not an actual quarter — the name is kept from existing usage (`13-strategic-plans/2026-Q3-Q4/`) despite spanning two. Supersedes the quarterly mid-layer from [issue #3](https://github.com/andrefabre/digby-virtual-assistant/issues/3) in part; decided [issue #36](https://github.com/andrefabre/digby-virtual-assistant/issues/36), ADR 0009.
+_Avoid_: Quarterly plan, Sprint (dropped from the Cascade entirely — see below)
+
 **Sprint**:
-A two-week block of committed work inside a Phase.
-_Avoid_: Iteration, cycle
+A two-week block of committed work inside a Phase — delivery/build work, not the planning Cascade. Dropped from the Cascade's mid-layer (issue #36): weeks roll straight up to the Q1/Q2 or Q3/Q4 Plan, no layer between them.
+_Avoid_: Iteration, cycle; do not use for anything in the Cascade
 
 **Weekly Execution Plan**:
 The markdown artifact holding one week's commitments, hour allocations and outcomes. The Cascade's lowest planning layer, and the document the daily loop reads and writes.
