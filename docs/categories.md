@@ -116,10 +116,36 @@ categories:
       income: "$80,000/year"
       debt: "$35,000"
       savings: "$0"
+      security_plus_fee: >
+        $600, due before Dec 31 — already funded by an existing
+        $50/fortnight tracker projected to hit $600 by Nov 25. Solved,
+        not a live blocker.
+      course_fees:
+        bachelor_of_it: "$0 upfront (HECS-HELP)"
+        law_degree: "Not tracked — institution undecided; revisit ~2028"
+    floor:
+      commitment: none
+      note: >
+        ~15-20 min/week already happens informally (budget review and
+        update). Not protected — doesn't need to be.
     goal_kinds:
       - Annual income growth
       - Debt paydown milestones
       - Savings / emergency-fund build
+    open:
+      - >
+        $0 in any savings/emergency buffer — the real current gap.
+        Target savings figure (per-fortnight amount, 12-month goal) set
+        during 2027 budget planning, once fortnightly capacity is
+        known from the existing budget spreadsheet.
+      - >
+        No long-range income/savings/net-worth target set below the
+        2033 Destination figure — folds into the same 2027 planning
+        pass.
+    note: >
+      The Exegesis-revenue-vs-$80k-salary comparison — the trigger for
+      going all-in on the business — lives under Business (see #33's
+      open item), not here, since it is a Business decision.
 
   - name: Health & Fitness
     enabler: true
@@ -256,7 +282,10 @@ per-Pillar kill/adjust/scale decision until the Jan 2027 review.
 scale), service-to-product pivots.
 
 **Open:** no long-range revenue/customer/date target through
-2030 — deferred until a Pillar is chosen to proceed with.
+2030 — deferred until a Pillar is chosen to proceed with. The
+Exegesis-revenue-vs-$80k-salary comparison — the trigger for going
+all-in on the business — lives here, not in Financial, since it is a
+Business decision (see Financial's note).
 
 ## Financial
 
@@ -267,9 +296,29 @@ against reliance on any single income stream.
 $20,000 savings.
 
 **Contents (current):** $80,000/year income, $35,000 debt, $0 savings.
+Security+ exam fee ($600, due before Dec 31) is already funded by an
+existing $50/fortnight tracker projected to hit $600 by Nov 25 —
+solved, not a live blocker. Bachelor of IT fees are $0 upfront
+(HECS-HELP); law degree fees are untracked, institution undecided,
+revisit ~2028.
+
+**Floor:** none. ~15-20 min/week already happens informally (budget
+review and update) — not protected, doesn't need to be.
 
 **Goal-kinds:** annual income growth, debt paydown milestones,
 savings/emergency-fund build.
+
+**Open:** $0 in any savings/emergency buffer — the real current gap.
+Target savings figure (per-fortnight amount, 12-month goal) set during
+2027 budget planning, once fortnightly capacity is known from the
+existing budget spreadsheet. No long-range income/savings/net-worth
+target set below the 2033 Destination figure — folds into the same
+2027 pass.
+
+**Note (Business boundary):** the Exegesis-revenue-vs-salary
+comparison — whether business income ever exceeds the $80k G4S
+salary — lives under Business (#33), not here, since acting on it is
+a Business decision.
 
 ## Health & Fitness
 
