@@ -35,12 +35,30 @@ categories:
       - Court Security & Custody Officer, G4S (current)
       - Judicial Support Officer, WA Department of Justice (target)
       - Specialist practitioner in Legal Tech (2033)
+      - "Networking (parked, one file, no allocation)"
+      - "Portfolio site — career half: experience, projects, LinkedIn link (~2h of tweaks remaining, ad hoc, no allocation)"
+    floor:
+      commitment: none
+      note: >
+        JSO applications are ad hoc, not scheduled — materials are
+        pre-prepared per the PLAN's JSO Application Operating Model;
+        Digby tracks nothing while waiting and creates a new task when
+        the role re-advertises.
     goal_kinds:
       - Role / title transitions
       - Supervised Legal Practice progress (2031–2033)
     note: >
       A role also serves Financial as an income stream; Career reads the
       same fact for identity-building progress, not income.
+    open:
+      - >
+        No long-range progression target beyond JSO — focus is the JSO
+        role only, to be re-evaluated early 2027.
+      - >
+        Casual-work contingency has no fixed trigger: gated on Sem 1
+        2027 unit selection, an employer conversation, and the
+        hours-needed-at-~$50/hr math. A manual decision, not one Digby
+        prompts or tracks toward.
 
   - name: Business
     for: >
@@ -157,7 +175,14 @@ practitioner in a Legal Tech role.
 
 **Contents:** Court Security & Custody Officer, G4S (current) → Judicial
 Support Officer, WA Department of Justice (target) → specialist
-practitioner in Legal Tech (2033).
+practitioner in Legal Tech (2033). Also: networking (parked, one file),
+and the portfolio site's career half — experience, projects, LinkedIn
+link — ~2h of tweaks from done, picked up ad hoc.
+
+**Floor:** none. JSO applications are ad hoc — materials are
+pre-prepared per the PLAN's JSO Application Operating Model, Digby
+tracks nothing while waiting, and a new task is created when the role
+re-advertises.
 
 **Goal-kinds:** role/title transitions, Supervised Legal Practice
 progress (2031–2033).
@@ -165,6 +190,15 @@ progress (2031–2033).
 A role also serves Financial as an income stream; Career reads the same
 fact for identity-building progress, not income — the same employment
 fact, read through two Categories.
+
+**Open:** no long-range progression target beyond JSO — re-evaluate
+early 2027. Casual-work contingency has no fixed trigger: gated on Sem
+1 2027 unit selection, an employer conversation, and hours-needed at
+~$50/hr — a manual decision, not something Digby tracks toward.
+
+**Note (Business boundary):** the portfolio site's business half —
+exegete.com.au services — sits under Business, not Career, tracked as
+part of the Exegesis/doors work (see #33).
 
 ## Business
 
