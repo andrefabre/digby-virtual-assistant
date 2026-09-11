@@ -25,7 +25,7 @@ The derivation chain from Pathway down to daily commitments. Every level is trac
 ## Planning structure
 
 **Category**:
-One of the five top-level areas every goal belongs to: Education, Career, Business, Health & Fitness, Financial. The taxonomy the whole Cascade hangs off.
+One of the five top-level areas every goal belongs to: Education, Career, Business, Health & Fitness, Financial. The taxonomy the whole Cascade hangs off. Each Category has a durable purpose (what it is for) kept separate from its current target, contents and goal-kinds, which can change without the definition changing. The canonical record is [docs/categories.md](./docs/categories.md); priority order is ADR 0002.
 _Avoid_: Domain, life area, area, pillar
 
 **Phase** — ⚠️ **contested, do not use unqualified** (see [issue #35](https://github.com/andrefabre/digby-virtual-assistant/issues/35)):
